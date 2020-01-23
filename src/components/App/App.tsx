@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import List from './List'
 import {
   AppBar,
@@ -79,4 +80,9 @@ const App = () => {
   )
 }
 
-export default App
+export default connect(
+  (state: any) => {
+    console.log('REDUX STATE', state)
+    return {}
+  }
+)(App)
