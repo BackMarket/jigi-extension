@@ -2,7 +2,12 @@ import { Tab } from '../../../types'
 import { createClient as createGithubClient } from '../../common/github'
 import { createClient as createJiraClient } from '../../common/jira'
 
-import { TAB_ADD, TAB_SHOW_SETTINGS, TAB_SET_TICKETS } from '../actions'
+import {
+  TAB_ADD,
+  TAB_SHOW_SETTINGS,
+  TAB_HIDE_SETTINGS,
+  TAB_SET_TICKETS,
+} from '../actions'
 
 export type AddTabAction = {
   type: Symbol
@@ -10,13 +15,13 @@ export type AddTabAction = {
 }
 
 export type SetTabTicketsPayload = {
-  tabId: string	
-  ticketIds: Array<string>	
-}	
+  tabId: string
+  ticketIds: Array<string>
+}
 
-export type SetTabTicketsAction = {	
-  type: Symbol	
-  payload: SetTabTicketsPayload	
+export type SetTabTicketsAction = {
+  type: Symbol
+  payload: SetTabTicketsPayload
 }
 
 export type Action = any
@@ -32,6 +37,7 @@ export default (state: any = {}, action: Action) => {
           id: payload.id,
           title: payload.title,
           githubClient: createGithubClient(payload.githubToken),
+          githubToken: payload.githubToken,
           githubOrganisation: payload.githubOrganisation,
           githubRepository: payload.githubRepository,
           jiraClient: createJiraClient(
@@ -39,6 +45,9 @@ export default (state: any = {}, action: Action) => {
             payload.jiraLogin,
             payload.jiraToken,
           ),
+          jiraHost: payload.jiraHost,
+          jiraLogin: payload.jiraLogin,
+          jiraToken: payload.jiraToken,
           jiraJqlQuery: payload.jiraJqlQuery,
           ticketIds: [],
           showSettings: false,
@@ -61,9 +70,18 @@ export default (state: any = {}, action: Action) => {
     case TAB_SHOW_SETTINGS:
       return {
         ...state,
-        [payload]: {
-          ...state[payload],
+        [payload.id]: {
+          ...state[payload.id],
           showSettings: true,
+        },
+      }
+
+    case TAB_HIDE_SETTINGS:
+      return {
+        ...state,
+        [payload.id]: {
+          ...state[payload.id],
+          showSettings: false,
         },
       }
 

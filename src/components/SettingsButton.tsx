@@ -3,9 +3,10 @@ import { createStyles, makeStyles, IconButton } from '@material-ui/core'
 import SettingsIcon from '@material-ui/icons/Settings'
 import { connect } from 'react-redux'
 import { showTabSettings } from '../store/actions'
+import { Tab } from '../../types'
 
 type SettingsButtonProps = {
-  tabId: string
+  tab: Tab
   handleSettingsClick: Function
 }
 
@@ -20,13 +21,13 @@ const useStyles = makeStyles(() =>
 )
 
 function SettingsButton(props: SettingsButtonProps) {
-  const { tabId, handleSettingsClick } = props
+  const { tab, handleSettingsClick } = props
   const classes = useStyles()
 
   return (
     <IconButton
       className={classes.button}
-      onClick={() => handleSettingsClick(tabId)}
+      onClick={() => handleSettingsClick(tab)}
     >
       <SettingsIcon />
     </IconButton>
@@ -34,7 +35,7 @@ function SettingsButton(props: SettingsButtonProps) {
 }
 
 export default connect(null, dispatch => ({
-  handleSettingsClick: (tabId: string) => {
-    dispatch(showTabSettings(tabId))
+  handleSettingsClick: (tab: Tab) => {
+    dispatch(showTabSettings(tab))
   },
 }))(SettingsButton)

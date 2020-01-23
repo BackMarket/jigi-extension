@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import List from './List'
 import {
@@ -63,29 +63,28 @@ const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
   const classes = useStyles()
   const [activeTabIndex, setActiveTabIndex] = React.useState(0)
   const tabsArray: Array<Tab> = Object.values(tabs)
-  const handleTabsChange = async (
-    event: any,
-    newValue: number,
-  ): Promise<void> => {
-    const currentTab: any = tabsArray[newValue]
-    setActiveTabIndex(newValue)
-    const fetchedTickets: TicketsList = await listTickets(
-      currentTab.jiraClient,
-      currentTab.jiraJqlQuery,
-    )
+  const handleTabsChange = useCallback(
+    async (event: any, newValue: number): Promise<void> => {
+      const currentTab: any = tabsArray[newValue]
+      setActiveTabIndex(newValue)
+      const fetchedTickets: TicketsList = await listTickets(
+        currentTab.jiraClient,
+        currentTab.jiraJqlQuery,
+      )
 
-    const ticketIds: Array<string> = fetchedTickets.map(ticket => {
-      addTicket(ticket)
-      return ticket.id
-    })
-    setTabTickets({ tabId: currentTab.id, ticketIds })
-  }
+      const ticketIds: Array<string> = fetchedTickets.map(ticket => {
+        addTicket(ticket)
+        return ticket.id
+      })
+      setTabTickets({ tabId: currentTab.id, ticketIds })
+    },
+    [addTicket, setTabTickets, tabsArray],
+  )
   const activeTab: any = Object.values(tabs)[activeTabIndex]
-  const activeTabId: string = Object.keys(tabs)[activeTabIndex]
 
   useEffect(() => {
     handleTabsChange({}, 0)
-  }, [])
+  }, [handleTabsChange])
 
   return (
     <div className={classes.wrapper}>
@@ -100,7 +99,7 @@ const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
             <MuiTab key={tab.id} label={tab.title} />
           ))}
           {activeTab && !activeTab.showSettings && (
-            <SettingsButton tabId={activeTabId} />
+            <SettingsButton tab={activeTab} />
           )}
         </Tabs>
       </AppBar>
