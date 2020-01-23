@@ -13,6 +13,7 @@ import {
   GITHUB_TOKEN,
   GITHUB_ORGANISATION,
   GITHUB_REPOSITORY,
+  JIRA_HOST,
   JIRA_TOKEN,
   JIRA_LOGIN,
 } from './.dev'
@@ -33,6 +34,7 @@ store.dispatch(
     githubToken: GITHUB_TOKEN,
     githubOrganisation: GITHUB_ORGANISATION,
     githubRepository: GITHUB_REPOSITORY,
+    jiraHost: JIRA_HOST,
     jiraToken: JIRA_TOKEN,
     jiraLogin: JIRA_LOGIN,
     jiraJqlQuery:

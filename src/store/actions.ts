@@ -12,6 +12,7 @@ export type AddTabPayload = {
   githubToken: string
   githubOrganisation: string
   githubRepository: string
+  jiraHost: string
   jiraToken: string
   jiraLogin: string
   jiraJqlQuery: string
@@ -23,19 +24,23 @@ export const addTab = ({
   githubToken,
   githubOrganisation,
   githubRepository,
+  jiraHost,
   jiraToken,
   jiraLogin,
   jiraJqlQuery,
 }: AddTabPayload) => ({
   type: TAB_ADD,
-  id,
-  title,
-  githubToken,
-  githubOrganisation,
-  githubRepository,
-  jiraToken,
-  jiraLogin,
-  jiraJqlQuery,
+  payload: {
+    id,
+    title,
+    githubToken,
+    githubOrganisation,
+    githubRepository,
+    jiraHost,
+    jiraToken,
+    jiraLogin,
+    jiraJqlQuery,
+  },
 })
 
 export type SetTabTicketsPayload = {
@@ -45,14 +50,18 @@ export type SetTabTicketsPayload = {
 
 export const setTabTickets = ({ tabId, ticketIds }: SetTabTicketsPayload) => ({
   type: TAB_SET_TICKETS,
-  tabId,
-  ticketIds,
+  payload: {
+    tabId,
+    ticketIds,
+  },
 })
 
 export const addTicket = ({ id, title, description, status }: Ticket) => ({
   type: TICKET_ADD,
-  id,
-  title,
-  description,
-  status,
+  payload: {
+    id,
+    title,
+    description,
+    status,
+  },
 })
