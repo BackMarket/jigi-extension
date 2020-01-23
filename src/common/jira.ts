@@ -1,5 +1,8 @@
 import { Issue, SearchResult } from 'jira-connector/types/api'
+
 import JiraClient from 'jira-connector'
+
+import { JIRA_LOGIN, JIRA_TOKEN } from '../.dev'
 
 export type SearchParams = {
   fields?: Array<string>
@@ -12,17 +15,17 @@ export type Status = {
 }
 export type Ticket = {
   id: string
-  description?: string
+  description?: string | null
   status: Status
-  summary: string
+  title: string
 }
 export type List = Array<Ticket>
 
 const jira: JiraClient = new JiraClient({
   host: '',
   basic_auth: {
-    email: '',
-    api_token: '',
+    email: JIRA_LOGIN,
+    api_token: JIRA_TOKEN,
   },
   strictSSL: false,
 })
@@ -47,7 +50,7 @@ export async function list(jql: string, maxResults?: number): Promise<List> {
         name: fields.status.name,
         color: fields.status.statusCategory.colorName,
       },
-      summary: fields.summary,
+      title: fields.summary,
     }),
   )
 }

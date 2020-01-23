@@ -1,3 +1,5 @@
+import { Ticket } from '../common/jira'
+
 export const TAB_ADD = Symbol('Add a tab')
 export const TAB_SET_TICKETS = Symbol(
   'Set the JIRA tickets of one particular Tab',
@@ -47,25 +49,10 @@ export const setTabTickets = ({ tabId, ticketIds }: SetTabTicketsPayload) => ({
   ticketIds,
 })
 
-export type AddTicketPayload = {
-  id: string
-  title: string
-  description: string
-  status: string
-  statusColor: string
-}
-
-export const addTicket = ({
-  id,
-  title,
-  description,
-  status,
-  statusColor,
-}: AddTicketPayload) => ({
+export const addTicket = ({ id, title, description, status }: Ticket) => ({
   type: TICKET_ADD,
   id,
   title,
   description,
   status,
-  statusColor,
 })
