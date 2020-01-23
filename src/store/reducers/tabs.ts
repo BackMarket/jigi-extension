@@ -8,7 +8,8 @@ export default (state: any = {}, action: any) => {
         [action.id]: {
           title: action.title,
           githubToken: action.githubToken,
-          githubProject: action.githubProject,
+          githubOrganisation: action.githubOrganisation,
+          githubRepository: action.githubRepository,
           jiraToken: action.jiraToken,
           jiraLogin: action.jiraLogin,
           jiraJqlQuery: action.jiraJqlQuery,
