@@ -1,6 +1,5 @@
-import { Ticket } from '../common/jira'
+import { Tab, Ticket } from '../../types'
 import {
-  AddTabPayload,
   AddTabAction,
   SetTabTicketsPayload,
   SetTabTicketsAction,
@@ -13,7 +12,7 @@ export const TAB_SET_TICKETS = Symbol(
 )
 export const TICKET_ADD = Symbol('Add a JIRA ticket')
 
-export const addTab = (payload: AddTabPayload): AddTabAction => ({
+export const addTab = (payload: Tab): AddTabAction => ({
   type: TAB_ADD,
   payload,
 })

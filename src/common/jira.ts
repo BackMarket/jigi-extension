@@ -1,4 +1,5 @@
 import { Issue, SearchResult } from 'jira-connector/types/api'
+import { List, Ticket } from '../../types'
 
 import JiraClient from 'jira-connector'
 
@@ -7,18 +8,6 @@ export type SearchParams = {
   jql?: string
   maxResults?: number
 }
-
-export type Status = {
-  name: string
-  color?: string
-}
-export type Ticket = {
-  id: string
-  description?: string | null
-  status: Status
-  title: string
-}
-export type List = Array<Ticket>
 
 const DEFAULT_MAX_RESULTS = 100
 const DEFAULT_FIELDS: Array<string> = ['description', 'status', 'summary']

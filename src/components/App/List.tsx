@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core'
 import theme from '../../theme'
 import { connect } from 'react-redux'
-import { Ticket } from '../../common/jira'
+import { Ticket } from '../../../types'
 
 interface ListProps {
   tickets: Ticket[]

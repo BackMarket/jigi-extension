@@ -1,4 +1,4 @@
-import { Ticket } from '../../common/jira'
+import { Ticket } from '../../../types'
 
 import { TICKET_ADD } from '../actions'
 

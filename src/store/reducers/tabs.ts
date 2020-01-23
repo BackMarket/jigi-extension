@@ -1,22 +1,12 @@
+import { Tab } from '../../../types'
 import { createClient as createGithubClient } from '../../common/github'
 import { createClient as createJiraClient } from '../../common/jira'
 
 import { TAB_ADD, TAB_SET_TICKETS } from '../actions'
 
-export type AddTabPayload = {
-  id: string
-  title: string
-  githubToken: string
-  githubOrganisation: string
-  githubRepository: string
-  jiraHost: string
-  jiraToken: string
-  jiraLogin: string
-  jiraJqlQuery: string
-}
 export type AddTabAction = {
   type: Symbol
-  payload: AddTabPayload
+  payload: Tab
 }
 
 export type SetTabTicketsPayload = {
