@@ -3,39 +3,72 @@ import { createClient as createJiraClient } from '../../common/jira'
 
 import { TAB_ADD, TAB_SET_TICKETS } from '../actions'
 
-export default (state: any = {}, action: any) => {
-  const { type, payload } = action
+export type AddTabPayload = {
+  id: string
+  title: string
+  githubToken: string
+  githubOrganisation: string
+  githubRepository: string
+  jiraHost: string
+  jiraToken: string
+  jiraLogin: string
+  jiraJqlQuery: string
+}
+export type AddTabAction = {
+  type: Symbol
+  payload: AddTabPayload
+}
+
+export type SetTabTicketsPayload = {
+  tabId: string
+  ticketIds: Array<string>
+}
+export type SetTabTicketsAction = {
+  type: Symbol
+  payload: SetTabTicketsPayload
+}
+
+export type Action = AddTabAction | SetTabTicketsAction
+
+export default (state: any = {}, action: Action) => {
+  const { type, payload }: Action = action
 
   switch (type) {
     case TAB_ADD: {
-      return {
-        ...state,
-        [payload.id]: {
-          title: payload.title,
-          githubClient: createGithubClient(payload.githubToken),
-          githubOrganisation: payload.githubOrganisation,
-          githubRepository: payload.githubRepository,
-          jiraClient: createJiraClient(
-            payload.jiraHost,
-            payload.jiraLogin,
-            payload.jiraToken,
-          ),
-          jiraJqlQuery: payload.jiraJqlQuery,
-          ticketIds: [],
-        },
+      if ('id' in payload) {
+        return {
+          ...state,
+          [payload.id]: {
+            title: payload.title,
+            githubClient: createGithubClient(payload.githubToken),
+            githubOrganisation: payload.githubOrganisation,
+            githubRepository: payload.githubRepository,
+            jiraClient: createJiraClient(
+              payload.jiraHost,
+              payload.jiraLogin,
+              payload.jiraToken,
+            ),
+            jiraJqlQuery: payload.jiraJqlQuery,
+            ticketIds: [],
+          },
+        }
       }
+      break
     }
 
     case TAB_SET_TICKETS: {
-      if (!(payload.id in state)) {
-        return state
-      }
+      if ('tabId' in payload) {
+        if (!(payload.tabId in state)) {
+          return state
+        }
 
-      const tab = {
-        ...state[payload.tabId],
-        ticketIds: payload.ticketIds,
+        const tab = {
+          ...state[payload.tabId],
+          ticketIds: payload.ticketIds,
+        }
+        return { ...state, [payload.tabId]: tab }
       }
-      return { ...state, [payload.tabId]: tab }
+      break
     }
 
     default:

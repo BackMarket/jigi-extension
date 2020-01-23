@@ -1,4 +1,11 @@
 import { Ticket } from '../common/jira'
+import {
+  AddTabPayload,
+  AddTabAction,
+  SetTabTicketsPayload,
+  SetTabTicketsAction,
+} from './reducers/tabs'
+import { AddTicketsAction } from './reducers/tickets'
 
 export const TAB_ADD = Symbol('Add a tab')
 export const TAB_SET_TICKETS = Symbol(
@@ -6,62 +13,19 @@ export const TAB_SET_TICKETS = Symbol(
 )
 export const TICKET_ADD = Symbol('Add a JIRA ticket')
 
-export type AddTabPayload = {
-  id: string
-  title: string
-  githubToken: string
-  githubOrganisation: string
-  githubRepository: string
-  jiraHost: string
-  jiraToken: string
-  jiraLogin: string
-  jiraJqlQuery: string
-}
-
-export const addTab = ({
-  id,
-  title,
-  githubToken,
-  githubOrganisation,
-  githubRepository,
-  jiraHost,
-  jiraToken,
-  jiraLogin,
-  jiraJqlQuery,
-}: AddTabPayload) => ({
+export const addTab = (payload: AddTabPayload): AddTabAction => ({
   type: TAB_ADD,
-  payload: {
-    id,
-    title,
-    githubToken,
-    githubOrganisation,
-    githubRepository,
-    jiraHost,
-    jiraToken,
-    jiraLogin,
-    jiraJqlQuery,
-  },
+  payload,
 })
 
-export type SetTabTicketsPayload = {
-  tabId: string
-  ticketIds: string[]
-}
-
-export const setTabTickets = ({ tabId, ticketIds }: SetTabTicketsPayload) => ({
+export const setTabTickets = (
+  payload: SetTabTicketsPayload,
+): SetTabTicketsAction => ({
   type: TAB_SET_TICKETS,
-  payload: {
-    tabId,
-    ticketIds,
-  },
+  payload,
 })
 
-export const addTicket = ({ id, title, description, status }: Ticket) => ({
+export const addTicket = (payload: Ticket): AddTicketsAction => ({
   type: TICKET_ADD,
-  payload: {
-    id,
-    title,
-    description,
-    status,
-  },
+  payload,
 })

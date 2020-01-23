@@ -1,19 +1,22 @@
+import { Ticket } from '../../common/jira'
+
 import { TICKET_ADD } from '../actions'
 
-export default (state: any = {}, action: any) => {
-  const { type, payload } = action
+export type AddTicketsAction = {
+  type: Symbol
+  payload: Ticket
+}
+
+export type Action = AddTicketsAction
+
+export default (state: any = {}, action: Action) => {
+  const { type, payload }: Action = action
 
   switch (type) {
     case TICKET_ADD: {
       return {
         ...state,
-        [payload.id]: {
-          id: payload.id,
-          title: payload.title,
-          description: payload.description,
-          status: payload.status,
-          statusColor: payload.statusColor,
-        },
+        [payload.id]: payload,
       }
     }
 
