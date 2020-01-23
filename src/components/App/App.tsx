@@ -4,12 +4,15 @@ import List from './List'
 import {
   AppBar,
   Tabs,
-  Tab,
+  Tab as MuiTab,
   Typography,
   makeStyles,
   createStyles,
 } from '@material-ui/core'
 import { list as listTickets, createClient } from '../../common/jira'
+import SettingsButton from '../SettingsButton'
+import Settings from '../Settings'
+import { Tab } from '../../../types'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -28,6 +31,9 @@ const useStyles = makeStyles(() =>
     },
     tabs: {
       background: 'white',
+    },
+    settingsButton: {
+      selfAlign: 'flexEnd',
     },
   }),
 )
@@ -52,7 +58,7 @@ function TabPanel(props: TabPanelProps) {
 const App = ({ tabs }: AppProps) => {
   const classes = useStyles()
   const [activeTabIndex, setActiveTabIndex] = React.useState(0)
-  const tabsArray = Object.values(tabs)
+  const tabsArray: Array<Tab> = Object.values(tabs)
   const handleTabsChange = async (
     event: React.ChangeEvent<{}>,
     newValue: number,
@@ -66,6 +72,8 @@ const App = ({ tabs }: AppProps) => {
     )
     listTickets(client, '')
   }
+  const activeTab: any = Object.values(tabs)[activeTabIndex]
+  const activeTabId: string = Object.keys(tabs)[activeTabIndex]
 
   return (
     <div className={classes.wrapper}>
@@ -77,12 +85,19 @@ const App = ({ tabs }: AppProps) => {
           textColor="primary"
         >
           {tabsArray.map((tab: any) => (
-            <Tab key={tab.id} label={tab.title} />
+            <MuiTab key={tab.id} label={tab.title} />
           ))}
+          {activeTab && !activeTab.showSettings && (
+            <SettingsButton tabId={activeTabId} />
+          )}
         </Tabs>
       </AppBar>
       <TabPanel value={activeTabIndex} index={0}>
-        <List />
+        {activeTab && activeTab.showSettings ? (
+          <Settings tab={activeTab} />
+        ) : (
+          <List />
+        )}
       </TabPanel>
     </div>
   )

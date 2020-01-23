@@ -2,7 +2,7 @@ import { Tab } from '../../../types'
 import { createClient as createGithubClient } from '../../common/github'
 import { createClient as createJiraClient } from '../../common/jira'
 
-import { TAB_ADD } from '../actions'
+import { TAB_ADD, TAB_SHOW_SETTINGS } from '../actions'
 
 export type AddTabAction = {
   type: Symbol
@@ -30,9 +30,19 @@ export default (state: any = {}, action: Action) => {
           ),
           jiraJqlQuery: payload.jiraJqlQuery,
           ticketIds: [],
+          showSettings: false,
         },
       }
     }
+
+    case TAB_SHOW_SETTINGS:
+      return {
+        ...state,
+        [payload]: {
+          ...state[payload],
+          showSettings: true,
+        },
+      }
 
     default:
       return state

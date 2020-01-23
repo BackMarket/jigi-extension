@@ -1,14 +1,14 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
+// import TextField from '@material-ui/core/TextField'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import SearchIcon from '@material-ui/icons/Search'
+// import SearchIcon from '@material-ui/icons/Search'
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel'
 import {
   makeStyles,
   createStyles,
-  Grid,
+  // Grid,
   withStyles,
   Select,
   Typography,
@@ -71,7 +71,7 @@ const List = ({ tickets, issues }: ListProps) => {
 
   return (
     <>
-      <Grid container spacing={1}>
+      {/* <Grid container spacing={1}>
         <Grid className={classes.searchIcon} item xs={1}>
           <SearchIcon />
         </Grid>
@@ -82,7 +82,7 @@ const List = ({ tickets, issues }: ListProps) => {
             label="Search"
           />
         </Grid>
-      </Grid>
+      </Grid> */}
       {ticketsArray.map(({ status, title, description }: Ticket, index) => (
         <ExpansionPanel
           key={title}

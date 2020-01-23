@@ -4,12 +4,19 @@ export const TAB_ADD = Symbol('Add a tab')
 export const TAB_SET_TICKETS = Symbol(
   'Set the JIRA tickets of one particular Tab',
 )
+export const TAB_SHOW_SETTINGS = Symbol('Show a tab settings')
+
 export const TICKET_ADD = Symbol('Add a JIRA ticket')
 
 export const ISSUES_ADD = Symbol('Add a github issue')
 
-export const addTab = (payload: Tab): any => ({
+export const addTab = (payload: Omit<Tab, 'showSettings'>): any => ({
   type: TAB_ADD,
+  payload,
+})
+
+export const showTabSettings = (payload: string): any => ({
+  type: TAB_SHOW_SETTINGS,
   payload,
 })
 

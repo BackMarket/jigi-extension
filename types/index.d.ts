@@ -22,6 +22,7 @@ export type Tab = {
   jiraToken: string
   jiraLogin: string
   jiraJqlQuery: string
+  showSettings: boolean
 }
 
 export type GithubLabel = {
