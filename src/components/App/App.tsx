@@ -19,7 +19,7 @@ interface TabPanelProps {
 const useStyles = makeStyles(() =>
   createStyles({
     wrapper: {
-      width: '500px',
+      width: '600px',
     },
     tabs: {
       background: 'white',
