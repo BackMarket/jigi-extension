@@ -1,10 +1,4 @@
-import { Tab, Ticket } from '../../types'
-import {
-  AddTabAction,
-  SetTabTicketsPayload,
-  SetTabTicketsAction,
-} from './reducers/tabs'
-import { AddTicketsAction } from './reducers/tickets'
+import { Tab, Ticket, IssuesList } from '../../types'
 
 export const TAB_ADD = Symbol('Add a tab')
 export const TAB_SET_TICKETS = Symbol(
@@ -12,19 +6,19 @@ export const TAB_SET_TICKETS = Symbol(
 )
 export const TICKET_ADD = Symbol('Add a JIRA ticket')
 
-export const addTab = (payload: Tab): AddTabAction => ({
+export const ISSUES_ADD = Symbol('Add a github issue')
+
+export const addTab = (payload: Tab): any => ({
   type: TAB_ADD,
   payload,
 })
 
-export const setTabTickets = (
-  payload: SetTabTicketsPayload,
-): SetTabTicketsAction => ({
-  type: TAB_SET_TICKETS,
+export const addTicket = (payload: Ticket): any => ({
+  type: TICKET_ADD,
   payload,
 })
 
-export const addTicket = (payload: Ticket): AddTicketsAction => ({
-  type: TICKET_ADD,
+export const addIssues = (payload: IssuesList): any => ({
+  type: ISSUES_ADD,
   payload,
 })

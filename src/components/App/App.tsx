@@ -9,6 +9,7 @@ import {
   makeStyles,
   createStyles,
 } from '@material-ui/core'
+import { list as listTickets, createClient } from '../../common/jira'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -52,8 +53,18 @@ const App = ({ tabs }: AppProps) => {
   const classes = useStyles()
   const [activeTabIndex, setActiveTabIndex] = React.useState(0)
   const tabsArray = Object.values(tabs)
-  const handleTabsChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabsChange = async (
+    event: React.ChangeEvent<{}>,
+    newValue: number,
+  ) => {
+    const currentTab = tabs[newValue]
     setActiveTabIndex(newValue)
+    const client = await createClient(
+      currentTab.jiraHost,
+      currentTab.jiraLogin,
+      currentTab.jiraToken,
+    )
+    listTickets(client, '')
   }
 
   return (

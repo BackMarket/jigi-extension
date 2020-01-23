@@ -15,10 +15,11 @@ import {
 } from '@material-ui/core'
 import theme from '../../theme'
 import { connect } from 'react-redux'
-import { Ticket } from '../../../types'
+import { Ticket, IssuesList, TicketsList } from '../../../types'
 
 interface ListProps {
-  tickets: Ticket[]
+  tickets: TicketsList
+  issues: IssuesList
 }
 
 const useStyles = makeStyles(() =>
@@ -54,7 +55,7 @@ const ExpansionPanel = withStyles({
   expanded: {},
 })(MuiExpansionPanel)
 
-const List = ({ tickets }: ListProps) => {
+const List = ({ tickets, issues }: ListProps) => {
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState<string | false>(false)
 
@@ -84,6 +85,7 @@ const List = ({ tickets }: ListProps) => {
       </Grid>
       {ticketsArray.map(({ status, title, description }: Ticket, index) => (
         <ExpansionPanel
+          key={title}
           square
           expanded={expanded === `panel${index}`}
           onChange={handlePanelChange(`panel${index}`)}
@@ -111,9 +113,10 @@ const List = ({ tickets }: ListProps) => {
   )
 }
 
-const mapStateToProps = ({ tickets }: any) => {
+const mapStateToProps = ({ tickets, issues }: any) => {
   return {
     tickets,
+    issues,
   }
 }
 
