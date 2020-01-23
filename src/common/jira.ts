@@ -2,10 +2,9 @@ import { Issue, SearchResult } from 'jira-connector/types/api'
 
 import JiraClient from 'jira-connector'
 
-import { JIRA_LOGIN, JIRA_TOKEN } from '../.dev'
-
 export type SearchParams = {
   fields?: Array<string>
+  jql?: string
   maxResults?: number
 }
 
@@ -21,26 +20,40 @@ export type Ticket = {
 }
 export type List = Array<Ticket>
 
-const jira: JiraClient = new JiraClient({
-  host: '',
-  basic_auth: {
-    email: JIRA_LOGIN,
-    api_token: JIRA_TOKEN,
-  },
-  strictSSL: false,
-})
-
+const DEFAULT_MAX_RESULTS = 100
 const DEFAULT_FIELDS: Array<string> = ['description', 'status', 'summary']
 
-export async function search(
-  jql: string,
-  { fields = [], maxResults }: SearchParams = {},
-): Promise<SearchResult> {
-  return jira.search.search({ fields, jql, maxResults })
+export function createClient(
+  host: string,
+  login: string,
+  token: string,
+): JiraClient {
+  return new JiraClient({
+    host,
+    basic_auth: {
+      email: login,
+      api_token: token,
+    },
+    strictSSL: false,
+  })
 }
 
-export async function list(jql: string, maxResults?: number): Promise<List> {
-  const { issues } = await search(jql, { fields: DEFAULT_FIELDS, maxResults })
+export async function search(
+  client: JiraClient,
+  { fields = [], jql = '', maxResults }: SearchParams = {},
+): Promise<SearchResult> {
+  return client.search.search({ fields, jql, maxResults })
+}
+
+export async function list(
+  client: JiraClient,
+  jql: string = '',
+): Promise<List> {
+  const { issues } = await search(client, {
+    fields: DEFAULT_FIELDS,
+    jql,
+    maxResults: DEFAULT_MAX_RESULTS,
+  })
 
   return issues.map(
     ({ key, fields }: { key: string; fields: Issue }): Ticket => ({
