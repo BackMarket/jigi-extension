@@ -1,5 +1,6 @@
+import { TicketsList, Ticket } from '../../types'
+
 import { Issue, SearchResult } from 'jira-connector/types/api'
-import { List, Ticket } from '../../types'
 
 import JiraClient from 'jira-connector'
 
@@ -37,14 +38,14 @@ export async function search(
 export async function list(
   client: JiraClient,
   jql: string = '',
-): Promise<List> {
-  const { issues } = await search(client, {
+): Promise<TicketsList> {
+  const { issues: tickets } = await search(client, {
     fields: DEFAULT_FIELDS,
     jql,
     maxResults: DEFAULT_MAX_RESULTS,
   })
 
-  return issues.map(
+  return tickets.map(
     ({ key, fields }: { key: string; fields: Issue }): Ticket => ({
       id: key,
       description: fields.description,

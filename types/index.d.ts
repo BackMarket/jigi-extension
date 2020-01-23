@@ -10,7 +10,7 @@ export type Ticket = {
   title: string
 }
 
-export type List = Array<Ticket>
+export type TicketsList = Array<Ticket>
 
 export type Tab = {
   id: string
@@ -23,3 +23,31 @@ export type Tab = {
   jiraLogin: string
   jiraJqlQuery: string
 }
+
+export type GithubLabel = {
+  id: number
+  name: string
+  color: string
+}
+
+export type GithubUser = {
+  id: number
+  login: string
+  avatar?: string
+  url?: string
+}
+
+export type Issue = {
+  id: number
+  title: string
+  user?: GithubUser
+  labels?: Array<GithubLabel>
+  state: string
+  assignee?: string | null
+  pullRequest?: {
+    url?: string | null
+  }
+  body: string
+}
+
+export type IssuesList = Array<Issue>
