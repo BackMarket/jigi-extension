@@ -16,6 +16,10 @@ interface TabPanelProps {
   value: any
 }
 
+interface AppProps {
+  tabs: any
+}
+
 const useStyles = makeStyles(() =>
   createStyles({
     wrapper: {
@@ -44,20 +48,13 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-const App = () => {
+const App = ({ tabs }: AppProps) => {
   const classes = useStyles()
   const [activeTabIndex, setActiveTabIndex] = React.useState(0)
+  const tabsArray = Object.values(tabs)
   const handleTabsChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setActiveTabIndex(newValue)
   }
-  const repos = [
-    {
-      name: 'repo1',
-    },
-    {
-      name: 'repo2',
-    },
-  ]
 
   return (
     <div className={classes.wrapper}>
@@ -68,8 +65,8 @@ const App = () => {
           onChange={handleTabsChange}
           textColor="primary"
         >
-          {repos.map(repo => (
-            <Tab key={repo.name} label={repo.name} />
+          {tabsArray.map((tab: any) => (
+            <Tab key={tab.id} label={tab.title} />
           ))}
         </Tabs>
       </AppBar>
@@ -80,9 +77,8 @@ const App = () => {
   )
 }
 
-export default connect(
-  (state: any) => {
-    console.log('REDUX STATE', state)
-    return {}
+export default connect(({ tabs }: any) => {
+  return {
+    tabs,
   }
-)(App)
+})(App)

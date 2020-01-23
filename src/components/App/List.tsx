@@ -1,5 +1,4 @@
 import React from 'react'
-import Chip from '@material-ui/core/Chip'
 import TextField from '@material-ui/core/TextField'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
@@ -15,6 +14,12 @@ import {
   Typography,
 } from '@material-ui/core'
 import theme from '../../theme'
+import { connect } from 'react-redux'
+import { Ticket } from '../../common/jira'
+
+interface ListProps {
+  tickets: Ticket[]
+}
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -49,58 +54,11 @@ const ExpansionPanel = withStyles({
   expanded: {},
 })(MuiExpansionPanel)
 
-const List = () => {
+const List = ({ tickets }: ListProps) => {
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState<string | false>(false)
-  const tickets = [
-    {
-      status: 'todo',
-      title: 'foobar',
-      description: 'seugfduseygfb',
-      issues: [
-        {
-          number: '1234',
-          status: 'closed',
-        },
-        {
-          number: '1232',
-          status: 'closed',
-        },
-      ],
-    },
-    {
-      status: 'todo',
-      title: 'bar',
-      description: 'seugfduseygfb',
-      issues: [
-        {
-          number: '1231',
-          status: 'closed',
-        },
-        {
-          number: '1222',
-          status: 'closed',
-        },
-      ],
-    },
-    {
-      status: 'todo',
-      title: 'baz',
-      description: 'seugfduseygfb',
-      issues: [
-        {
-          number: '2234',
-          status: 'closed',
-        },
-        {
-          number: '2232',
-          status: 'closed',
-        },
-      ],
-    },
-  ]
 
-  const statusList = ['todo', 'done']
+  const statusList = ['to-do', 'Running']
 
   const handlePanelChange = (panel: string) => (
     event: React.ChangeEvent<{}>,
@@ -108,6 +66,7 @@ const List = () => {
   ) => {
     setExpanded(isExpanded ? panel : false)
   }
+  const ticketsArray = Object.values(tickets)
 
   return (
     <>
@@ -123,47 +82,27 @@ const List = () => {
           />
         </Grid>
       </Grid>
-      {tickets.map(({ status, title, description, issues }, index) => (
+      {ticketsArray.map(({ status, title, description }: Ticket, index) => (
         <ExpansionPanel
           square
           expanded={expanded === `panel${index}`}
           onChange={handlePanelChange(`panel${index}`)}
         >
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Grid container spacing={1}>
-              <Grid container item xs={6}>
-                <Select
-                  onClick={event => event.stopPropagation()}
-                  native
-                  value={status}
-                  inputProps={{
-                    name: 'age',
-                    id: 'outlined-age-native-simple',
-                  }}
-                >
-                  {statusList.map(status => (
-                    <option value={status}>{status}</option>
-                  ))}
-                </Select>
-                <Typography className={classes.ticketTitle} variant="h6">
-                  {title}
-                </Typography>
-              </Grid>
-              <Grid container item xs={6} justify="flex-end">
-                <div>
-                  {issues.map(issue => (
-                    <Chip color="secondary" label={issue.number} />
-                  ))}
-                </div>
-              </Grid>
-            </Grid>
+            <Select
+              onClick={event => event.stopPropagation()}
+              native
+              value={status.name}
+            >
+              {statusList.map(statusListItem => (
+                <option value={statusListItem}>{statusListItem}</option>
+              ))}
+            </Select>
+            <Typography className={classes.ticketTitle} variant="h6">
+              {title}
+            </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <div>
-              {issues.map(issue => (
-                <Chip color="secondary" label={issue.number} />
-              ))}
-            </div>
             <div>{description}</div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -172,4 +111,10 @@ const List = () => {
   )
 }
 
-export default List
+const mapStateToProps = ({ tickets }: any) => {
+  return {
+    tickets,
+  }
+}
+
+export default connect(mapStateToProps)(List)
