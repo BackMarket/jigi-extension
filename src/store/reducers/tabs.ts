@@ -2,11 +2,21 @@ import { Tab } from '../../../types'
 import { createClient as createGithubClient } from '../../common/github'
 import { createClient as createJiraClient } from '../../common/jira'
 
-import { TAB_ADD, TAB_SHOW_SETTINGS } from '../actions'
+import { TAB_ADD, TAB_SHOW_SETTINGS, TAB_SET_TICKETS } from '../actions'
 
 export type AddTabAction = {
   type: Symbol
   payload: Tab
+}
+
+export type SetTabTicketsPayload = {
+  tabId: string	
+  ticketIds: Array<string>	
+}	
+
+export type SetTabTicketsAction = {	
+  type: Symbol	
+  payload: SetTabTicketsPayload	
 }
 
 export type Action = any
@@ -19,6 +29,7 @@ export default (state: any = {}, action: Action) => {
       return {
         ...state,
         [payload.id]: {
+          id: payload.id,
           title: payload.title,
           githubClient: createGithubClient(payload.githubToken),
           githubOrganisation: payload.githubOrganisation,
@@ -33,6 +44,18 @@ export default (state: any = {}, action: Action) => {
           showSettings: false,
         },
       }
+    }
+    case TAB_SET_TICKETS: {
+      if (!(payload.tabId in state)) {
+        return state
+      }
+
+      const tab = {
+        ...state[payload.tabId],
+        ticketIds: payload.ticketIds,
+      }
+
+      return { ...state, [payload.tabId]: tab }
     }
 
     case TAB_SHOW_SETTINGS:

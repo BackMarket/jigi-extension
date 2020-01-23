@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import List from './List'
 import {
@@ -9,10 +9,12 @@ import {
   makeStyles,
   createStyles,
 } from '@material-ui/core'
-import { list as listTickets, createClient } from '../../common/jira'
 import SettingsButton from '../SettingsButton'
 import Settings from '../Settings'
 import { Tab } from '../../../types'
+import { list as listTickets } from '../../common/jira'
+import { setTabTickets, addTicket } from '../../store/actions'
+import { TicketsList } from '../../../types'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -22,6 +24,8 @@ interface TabPanelProps {
 
 interface AppProps {
   tabs: any
+  setTabTickets: any
+  addTicket: any
 }
 
 const useStyles = makeStyles(() =>
@@ -55,25 +59,33 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-const App = ({ tabs }: AppProps) => {
+const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
   const classes = useStyles()
   const [activeTabIndex, setActiveTabIndex] = React.useState(0)
   const tabsArray: Array<Tab> = Object.values(tabs)
   const handleTabsChange = async (
-    event: React.ChangeEvent<{}>,
+    event: any,
     newValue: number,
-  ) => {
-    const currentTab = tabs[newValue]
+  ): Promise<void> => {
+    const currentTab: any = tabsArray[newValue]
     setActiveTabIndex(newValue)
-    const client = await createClient(
-      currentTab.jiraHost,
-      currentTab.jiraLogin,
-      currentTab.jiraToken,
+    const fetchedTickets: TicketsList = await listTickets(
+      currentTab.jiraClient,
+      currentTab.jiraJqlQuery,
     )
-    listTickets(client, '')
+
+    const ticketIds: Array<string> = fetchedTickets.map(ticket => {
+      addTicket(ticket)
+      return ticket.id
+    })
+    setTabTickets({ tabId: currentTab.id, ticketIds })
   }
   const activeTab: any = Object.values(tabs)[activeTabIndex]
   const activeTabId: string = Object.keys(tabs)[activeTabIndex]
+
+  useEffect(() => {
+    handleTabsChange({}, 0)
+  }, [])
 
   return (
     <div className={classes.wrapper}>
@@ -102,9 +114,15 @@ const App = ({ tabs }: AppProps) => {
     </div>
   )
 }
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    addTicket: (payload: any) => dispatch(addTicket(payload)),
+    setTabTickets: (payload: any) => dispatch(setTabTickets(payload)),
+  }
+}
 
 export default connect(({ tabs }: any) => {
   return {
     tabs,
   }
-})(App)
+}, mapDispatchToProps)(App)

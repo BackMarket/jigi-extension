@@ -59,6 +59,7 @@ const List = ({ tickets, issues }: ListProps) => {
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState<string | false>(false)
 
+  console.log(tickets)
   const statusList = ['to-do', 'Running']
 
   const handlePanelChange = (panel: string) => (

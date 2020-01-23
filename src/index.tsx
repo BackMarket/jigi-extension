@@ -38,7 +38,7 @@ store.dispatch(
     jiraToken: JIRA_TOKEN,
     jiraLogin: JIRA_LOGIN,
     jiraJqlQuery:
-      'assignee in (currentUser()) AND sprint in openSprints() ORDER BY resolution DESC, status ASC, priority DESC, "Story point estimate" ASC',
+      'assignee in (currentUser()) AND sprint in openSprints() AND sprint NOT in futureSprints() ORDER BY resolution DESC, status ASC, priority DESC, "Story point estimate" ASC',
   }),
 )
 
