@@ -1,15 +1,9 @@
-import { Tab } from '../../types'
-
 import React from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
 
 import { saveTab } from '../common/storage'
-
-type SettingsProps = {
-  tab: Tab
-}
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -32,7 +26,7 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-export default function Settings({ tab }: SettingsProps) {
+export default function Settings({ tab }) {
   const classes = useStyles()
 
   const [updateSetting] = useDebouncedCallback((field, value) => {
@@ -65,7 +59,7 @@ export default function Settings({ tab }: SettingsProps) {
           label="Title"
           placeholder="Give a name to your tab..."
           defaultValue={tab.title}
-          onChange={(event: any) => updateSetting('title', event.target.value)}
+          onChange={event => updateSetting('title', event.target.value)}
           required
           fullWidth
         />
@@ -75,9 +69,7 @@ export default function Settings({ tab }: SettingsProps) {
           label="JIRA domain"
           placeholder="Ex: mycompany.atlassian.net"
           defaultValue={tab.jiraHost}
-          onChange={(event: any) =>
-            updateJiraSetting('jiraHost', event.target.value)
-          }
+          onChange={event => updateJiraSetting('jiraHost', event.target.value)}
           required
           fullWidth
         />
@@ -87,9 +79,7 @@ export default function Settings({ tab }: SettingsProps) {
           label="JIRA login"
           placeholder="E-mail address"
           defaultValue={tab.jiraLogin}
-          onChange={(event: any) =>
-            updateJiraSetting('jiraLogin', event.target.value)
-          }
+          onChange={event => updateJiraSetting('jiraLogin', event.target.value)}
           required
           fullWidth
         />
@@ -98,9 +88,7 @@ export default function Settings({ tab }: SettingsProps) {
           id="jiraToken"
           label="JIRA token"
           defaultValue={tab.jiraToken}
-          onChange={(event: any) =>
-            updateJiraSetting('jiraToken', event.target.value)
-          }
+          onChange={event => updateJiraSetting('jiraToken', event.target.value)}
           required
           fullWidth
         />
@@ -109,7 +97,7 @@ export default function Settings({ tab }: SettingsProps) {
           id="jiraJqlQuery"
           label="JIRA JQL Query"
           defaultValue={tab.jiraJqlQuery}
-          onChange={(event: any) =>
+          onChange={event =>
             updateJiraSetting('jiraJqlQuery', event.target.value)
           }
           required
@@ -121,7 +109,7 @@ export default function Settings({ tab }: SettingsProps) {
           id="githubOrganisation"
           label="GitHub organization or username"
           defaultValue={tab.githubOrganisation}
-          onChange={(event: any) =>
+          onChange={event =>
             updateGithubSetting('githubOrganisation', event.target.value)
           }
           required
@@ -133,7 +121,7 @@ export default function Settings({ tab }: SettingsProps) {
           id="githubRepository"
           label="GitHub repository"
           defaultValue={tab.githubRepository}
-          onChange={(event: any) =>
+          onChange={event =>
             updateGithubSetting('githubRepository', event.target.value)
           }
           required
@@ -145,7 +133,7 @@ export default function Settings({ tab }: SettingsProps) {
           id="githubToken"
           label="GitHub token"
           defaultValue={tab.githubToken}
-          onChange={(event: any) =>
+          onChange={event =>
             updateGithubSetting('githubToken', event.target.value)
           }
           required

@@ -1,14 +1,8 @@
-import { Tab } from '../../types'
-
 import React from 'react'
 
 import { createStyles, makeStyles, IconButton } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check'
 import SettingsIcon from '@material-ui/icons/Settings'
-
-type SettingsButtonProps = {
-  tab: Tab
-}
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -20,7 +14,7 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-export default function SettingsButton(props: SettingsButtonProps) {
+export default function SettingsButton(props) {
   const { tab } = props
   const classes = useStyles()
 
