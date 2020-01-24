@@ -1,13 +1,20 @@
-import React, { useState } from 'react'
-import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
+import React, { useState, useEffect } from 'react'
+import debounce from 'debounce'
+import { createStyles, makeStyles, TextField } from '@material-ui/core'
 import { connect } from 'react-redux'
-import { hideTabSettings, addTab } from '../store/actions'
 import { Tab } from '../../types'
+import { saveTab } from '../common/storage'
+import {
+  updateTabSettings,
+  updateTabJiraSettings,
+  updateTabGithubSettings,
+} from '../store/actions'
 
 type SettingsProps = {
   tab: Tab
-  handleSubmit: Function
-  handleCancel: Function
+  updateTabSettings: Function
+  updateTabJiraSettings: Function
+  updateTabGithubSettings: Function
 }
 
 const useStyles = makeStyles(() =>
@@ -31,7 +38,13 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
+function Settings({
+  tab,
+  updateTabSettings,
+  updateTabJiraSettings,
+  updateTabGithubSettings,
+}: SettingsProps) {
+  const { id } = tab
   const classes = useStyles()
   const [title, setTitle] = useState(tab.title)
   const [jiraHost, setJiraHost] = useState(tab.jiraHost)
@@ -44,22 +57,71 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
   const [githubRepository, setGithubRepository] = useState(tab.githubRepository)
   const [githubToken, setGithubToken] = useState(tab.githubToken)
 
+  useEffect(() => {
+    updateTabSettings({
+      id,
+      title,
+    })
+  }, [id, title, updateTabSettings])
+
+  useEffect(
+    debounce(() => {
+      updateTabJiraSettings({
+        id,
+        jiraHost,
+        jiraLogin,
+        jiraToken,
+        jiraJqlQuery,
+      })
+    }, 1000),
+    [jiraHost, jiraLogin, jiraToken, jiraJqlQuery],
+  )
+
+  useEffect(
+    debounce(() => {
+      updateTabGithubSettings({
+        id,
+        githubOrganisation,
+        githubRepository,
+        githubToken,
+      })
+    }, 500),
+    [githubOrganisation, githubRepository, githubToken],
+  )
+
+  useEffect(
+    debounce(() => {
+      saveTab({
+        id,
+        title,
+        jiraHost,
+        jiraLogin,
+        jiraToken,
+        jiraJqlQuery,
+        githubOrganisation,
+        githubRepository,
+        githubToken,
+      })
+    }, 200),
+    [
+      title,
+      jiraHost,
+      jiraLogin,
+      jiraToken,
+      jiraJqlQuery,
+      githubOrganisation,
+      githubRepository,
+      githubToken,
+    ],
+  )
+
   return (
     <form
       className={classes.form}
       autoComplete="off"
-      onSubmit={event =>
-        handleSubmit(event, tab, {
-          title,
-          jiraHost,
-          jiraLogin,
-          jiraToken,
-          jiraJqlQuery,
-          githubOrganisation,
-          githubRepository,
-          githubToken,
-        })
-      }
+      onSubmit={event => {
+        event.preventDefault()
+      }}
     >
       <div className={classes.fields}>
         <TextField
@@ -114,7 +176,7 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
         <TextField
           className={classes.field}
           id="githubOrganisation"
-          label="GitHub token"
+          label="GitHub organization or username"
           value={githubOrganisation}
           onChange={event => setGithubOrganisation(event.target.value)}
           required
@@ -124,7 +186,7 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
         <TextField
           className={classes.field}
           id="githubRepository"
-          label="GitHub token"
+          label="GitHub repository"
           value={githubRepository}
           onChange={event => setGithubRepository(event.target.value)}
           required
@@ -142,35 +204,12 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
           multiline
         />
       </div>
-
-      <div className={classes.actions}>
-        <Button
-          className={classes.action}
-          color="primary"
-          onClick={() => handleCancel(tab)}
-        >
-          Cancel
-        </Button>
-        <Button
-          className={classes.action}
-          color="primary"
-          variant="contained"
-          type="submit"
-        >
-          Save
-        </Button>
-      </div>
     </form>
   )
 }
 
 export default connect(null, dispatch => ({
-  handleCancel: (tab: Tab) => {
-    dispatch(hideTabSettings(tab))
-  },
-  handleSubmit: (event: any, tab: Tab, values: any) => {
-    event.preventDefault()
-    dispatch(addTab({ ...tab, ...values }))
-    dispatch(hideTabSettings(tab))
-  },
+  updateTabSettings: (tab: Tab) => dispatch(updateTabSettings(tab)),
+  updateTabJiraSettings: (tab: Tab) => dispatch(updateTabJiraSettings(tab)),
+  updateTabGithubSettings: (tab: Tab) => dispatch(updateTabGithubSettings(tab)),
 }))(Settings)

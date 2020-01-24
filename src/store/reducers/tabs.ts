@@ -4,10 +4,11 @@ import { createClient as createJiraClient } from '../../common/jira'
 
 import {
   TAB_ADD,
+  TAB_UPDATE_SETTINGS,
+  TAB_UPDATE_JIRA_SETTINGS,
+  TAB_UPDATE_GITHUB_SETTINGS,
   TAB_SET_TICKETS,
-  TAB_SHOW_SETTINGS,
-  TAB_HIDE_SETTINGS,
-  TAB_SAVE_SETTINGS,
+  TAB_TOGGLE_SETTINGS,
 } from '../actions'
 
 export type AddTabAction = {
@@ -31,30 +32,87 @@ export default (state: any = {}, action: Action) => {
   const { type, payload }: Action = action
 
   switch (type) {
-    case TAB_ADD:
-    case TAB_SAVE_SETTINGS:
+    case TAB_ADD: {
+      let githubClient
+      try {
+        githubClient = createGithubClient(payload.githubToken)
+      } catch {}
+      let jiraClient
+      try {
+        jiraClient = createJiraClient(
+          payload.jiraHost,
+          payload.jiraLogin,
+          payload.jiraToken,
+        )
+      } catch {}
       return {
         ...state,
         [payload.id]: {
           id: payload.id,
           title: payload.title,
-          githubClient: createGithubClient(payload.githubToken),
           githubToken: payload.githubToken,
           githubOrganisation: payload.githubOrganisation,
           githubRepository: payload.githubRepository,
-          jiraClient: createJiraClient(
-            payload.jiraHost,
-            payload.jiraLogin,
-            payload.jiraToken,
-          ),
+          githubClient,
           jiraHost: payload.jiraHost,
           jiraLogin: payload.jiraLogin,
           jiraToken: payload.jiraToken,
           jiraJqlQuery: payload.jiraJqlQuery,
+          jiraClient,
           ticketIds: [],
-          showSettings: false,
+          showSettings: payload.showSettings,
         },
       }
+    }
+
+    case TAB_UPDATE_SETTINGS: {
+      return {
+        ...state,
+        [payload.id]: {
+          ...state[payload.id],
+          title: payload.title,
+        },
+      }
+    }
+
+    case TAB_UPDATE_JIRA_SETTINGS: {
+      let jiraClient
+      try {
+        jiraClient = createJiraClient(
+          payload.jiraHost,
+          payload.jiraLogin,
+          payload.jiraToken,
+        )
+      } catch {}
+      return {
+        ...state,
+        [payload.id]: {
+          ...state[payload.id],
+          jiraHost: payload.jiraHost,
+          jiraLogin: payload.jiraLogin,
+          jiraToken: payload.jiraToken,
+          jiraJqlQuery: payload.jiraJqlQuery,
+          jiraClient,
+        },
+      }
+    }
+
+    case TAB_UPDATE_GITHUB_SETTINGS: {
+      let githubClient
+      try {
+        githubClient = createGithubClient(payload.githubToken)
+      } catch {}
+      return {
+        ...state,
+        [payload.id]: {
+          ...state[payload.id],
+          githubToken: payload.githubToken,
+          githubOrganisation: payload.githubOrganisation,
+          githubRepository: payload.githubRepository,
+          githubClient,
+        },
+      }
+    }
 
     case TAB_SET_TICKETS: {
       if (!(payload.tabId in state)) {
@@ -69,21 +127,12 @@ export default (state: any = {}, action: Action) => {
       return { ...state, [payload.tabId]: tab }
     }
 
-    case TAB_SHOW_SETTINGS:
+    case TAB_TOGGLE_SETTINGS:
       return {
         ...state,
         [payload.id]: {
           ...state[payload.id],
-          showSettings: true,
-        },
-      }
-
-    case TAB_HIDE_SETTINGS:
-      return {
-        ...state,
-        [payload.id]: {
-          ...state[payload.id],
-          showSettings: false,
+          showSettings: !payload.showSettings,
         },
       }
 

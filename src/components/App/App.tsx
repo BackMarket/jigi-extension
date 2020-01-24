@@ -9,13 +9,20 @@ import {
   makeStyles,
   createStyles,
 } from '@material-ui/core'
-import SettingsButton from '../SettingsButton'
+import SettingsToggleButton from '../SettingsToggleButton'
 import Settings from '../Settings'
 import { Tab } from '../../../types'
 import { list as listTickets } from '../../common/jira'
+import { getTabs } from '../../common/storage'
 import { searchIssues } from '../../common/github'
-import { setTabTickets, addTicket } from '../../store/actions'
+import {
+  addTab,
+  setTabTickets,
+  addTicket,
+  createNewTab,
+} from '../../store/actions'
 import { Ticket, TicketsList } from '../../../types'
+// import NewTabButton from '../NewTabButton'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -25,6 +32,8 @@ interface TabPanelProps {
 
 interface AppProps {
   tabs: any
+  createNewTab: any
+  addTab: any
   setTabTickets: any
   addTicket: any
 }
@@ -36,9 +45,6 @@ const useStyles = makeStyles(() =>
     },
     tabs: {
       background: 'white',
-    },
-    settingsButton: {
-      selfAlign: 'flexEnd',
     },
   }),
 )
@@ -60,12 +66,22 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
+const App = ({
+  tabs,
+  createNewTab,
+  addTab,
+  setTabTickets,
+  addTicket,
+}: AppProps) => {
   const classes = useStyles()
   const [activeTabIndex, setActiveTabIndex] = React.useState(0)
   const tabsArray: Array<Tab> = Object.values(tabs)
   const handleTabsChange = useCallback(
     async (event: any, newValue: number): Promise<void> => {
+      if (tabsArray.length === 0) {
+        return
+      }
+
       const currentTab: any = tabsArray[newValue]
       setActiveTabIndex(newValue)
       const fetchedTickets: TicketsList = await listTickets(
@@ -96,6 +112,16 @@ const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
     handleTabsChange({}, 0)
   }, [handleTabsChange])
 
+  useEffect(() => {
+    getTabs().then((tabs: Array<Tab> = []) => {
+      if (tabs.length > 0) {
+        tabs.forEach(addTab)
+      } else {
+        createNewTab()
+      }
+    })
+  }, [addTab, createNewTab])
+
   return (
     <div className={classes.wrapper}>
       <AppBar position="static">
@@ -105,12 +131,16 @@ const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
           onChange={handleTabsChange}
           textColor="primary"
         >
-          {tabsArray.map((tab: any) => (
+          {tabsArray.map((tab: any, index: number) => (
             <MuiTab key={tab.id} label={tab.title} />
           ))}
-          {activeTab && !activeTab.showSettings && (
-            <SettingsButton tab={activeTab} />
-          )}
+          {/* <NewTabButton
+            onCreate={() => {
+              console.log('<App> NEW TAB', tabsArray.length)
+              setActiveTabIndex(tabsArray.length)
+            }}
+          /> */}
+          {activeTab && <SettingsToggleButton tab={activeTab} />}
         </Tabs>
       </AppBar>
       <TabPanel value={activeTabIndex} index={0}>
@@ -125,6 +155,8 @@ const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
 }
 const mapDispatchToProps = (dispatch: any) => {
   return {
+    createNewTab: () => dispatch(createNewTab()),
+    addTab: (payload: any) => dispatch(addTab(payload)),
     addTicket: (payload: any) => dispatch(addTicket(payload)),
     setTabTickets: (payload: any) => dispatch(setTabTickets(payload)),
   }
