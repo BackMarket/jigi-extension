@@ -58,7 +58,6 @@ const App = () => {
 
   useEffect(() => {
     const loadTabs = async () => {
-      console.log('LoadTabs')
       const tabs = await getTabs()
 
       if (!tabs || Object.keys(tabs).length === 0) {
@@ -83,7 +82,6 @@ const App = () => {
 
   useEffect(() => {
     const loadTickets = async () => {
-      console.log('LoadTickets')
       if (
         tabs.length === 0 ||
         activeTabIndex < 0 ||

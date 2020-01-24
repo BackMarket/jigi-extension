@@ -5,6 +5,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import Typography from '@material-ui/core/Typography'
+import Chip from '@material-ui/core/Chip'
+import ReactMarkdown from 'react-markdown'
 
 import theme from '../theme'
 
@@ -28,6 +31,7 @@ const useStyles = makeStyles(() =>
     },
     title: {
       flex: 1,
+      maxWidth: '300px',
       display: 'inline-block',
       marginLeft: theme.spacing(4),
     },
@@ -55,7 +59,9 @@ const ExpansionPanel = withStyles({
       margin: 'auto',
     },
   },
-  expanded: {},
+  expanded: {
+    flexDirection: 'column',
+  },
 })(MuiExpansionPanel)
 
 const List = ({ tickets }) => {
@@ -94,22 +100,24 @@ const List = ({ tickets }) => {
                     ))}
                   </Select>
 
-                  <span className={classes.title}>{title}</span>
+                  <Typography noWrap className={classes.title}>
+                    {title}
+                  </Typography>
                 </div>
 
                 {issues.length > 0 ? (
                   <div className={classes.issues}>
-                    {issues.map(({ pullRequest = { id: 'XXX' } }) => (
-                      <div key={pullRequest.id} className={classes.issue}>
-                        #{pullRequest.id}
-                      </div>
-                    ))}
+                    {issues.map(({ pullRequest = { id: 'XXX' } }) => {
+                      return (
+                        <Chip label={pullRequest.id} key={pullRequest.id} />
+                      )
+                    })}
                   </div>
                 ) : null}
               </div>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <div>{description}</div>
+            <ExpansionPanelDetails className={classes.expanded}>
+              <ReactMarkdown source={description} />
             </ExpansionPanelDetails>
           </ExpansionPanel>
         ),
