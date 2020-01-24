@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStyles, makeStyles, IconButton } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { createNewTab } from '../store/actions'
 
 type NewTabButtonProps = {
@@ -15,25 +15,18 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-function NewTabButton(props: NewTabButtonProps) {
-  const { onCreate, handleNewTabClick } = props
+export default function NewTabButton() {
   const classes = useStyles()
+  const dispatch = useDispatch()
 
   return (
     <IconButton
       className={classes.button}
       onClick={() => {
-        handleNewTabClick()
-        onCreate()
+        dispatch(createNewTab())
       }}
     >
       <AddIcon />
     </IconButton>
   )
 }
-
-export default connect(null, dispatch => ({
-  handleNewTabClick: () => {
-    dispatch(createNewTab())
-  },
-}))(NewTabButton)

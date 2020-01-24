@@ -9,6 +9,8 @@ import {
   TAB_UPDATE_GITHUB_SETTINGS,
   TAB_SET_TICKETS,
   TAB_TOGGLE_SETTINGS,
+  TAB_DELETE,
+  TAB_SET_ACTIVE_TAB_INDEX,
 } from '../actions'
 
 export type AddTabAction = {
@@ -28,7 +30,13 @@ export type SetTabTicketsAction = {
 
 export type Action = any
 
-export default (state: any = {}, action: Action) => {
+export default (
+  state: any = {
+    tabs: {},
+    activeTabIndex: 0,
+  },
+  action: Action,
+) => {
   const { type, payload }: Action = action
 
   switch (type) {
@@ -45,8 +53,8 @@ export default (state: any = {}, action: Action) => {
           payload.jiraToken,
         )
       } catch {}
-      return {
-        ...state,
+      const tabs = {
+        ...state.tabs,
         [payload.id]: {
           id: payload.id,
           title: payload.title,
@@ -63,15 +71,22 @@ export default (state: any = {}, action: Action) => {
           showSettings: payload.showSettings,
         },
       }
+      return {
+        tabs,
+        activeTabIndex: Object.values(tabs).length - 1,
+      }
     }
 
     case TAB_UPDATE_SETTINGS: {
       return {
-        ...state,
-        [payload.id]: {
-          ...state[payload.id],
-          title: payload.title,
+        tabs: {
+          ...state.tabs,
+          [payload.id]: {
+            ...state.tabs[payload.id],
+            title: payload.title,
+          },
         },
+        activeTabIndex: state.activeTabIndex,
       }
     }
 
@@ -85,15 +100,18 @@ export default (state: any = {}, action: Action) => {
         )
       } catch {}
       return {
-        ...state,
-        [payload.id]: {
-          ...state[payload.id],
-          jiraHost: payload.jiraHost,
-          jiraLogin: payload.jiraLogin,
-          jiraToken: payload.jiraToken,
-          jiraJqlQuery: payload.jiraJqlQuery,
-          jiraClient,
+        tabs: {
+          ...state.tabs,
+          [payload.id]: {
+            ...state.tabs[payload.id],
+            jiraHost: payload.jiraHost,
+            jiraLogin: payload.jiraLogin,
+            jiraToken: payload.jiraToken,
+            jiraJqlQuery: payload.jiraJqlQuery,
+            jiraClient,
+          },
         },
+        activeTabIndex: state.activeTabIndex,
       }
     }
 
@@ -103,37 +121,62 @@ export default (state: any = {}, action: Action) => {
         githubClient = createGithubClient(payload.githubToken)
       } catch {}
       return {
-        ...state,
-        [payload.id]: {
-          ...state[payload.id],
-          githubToken: payload.githubToken,
-          githubOrganisation: payload.githubOrganisation,
-          githubRepository: payload.githubRepository,
-          githubClient,
+        tabs: {
+          ...state.tabs,
+          [payload.id]: {
+            ...state.tabs[payload.id],
+            githubToken: payload.githubToken,
+            githubOrganisation: payload.githubOrganisation,
+            githubRepository: payload.githubRepository,
+            githubClient,
+          },
         },
+        activeTabIndex: state.activeTabIndex,
       }
     }
 
     case TAB_SET_TICKETS: {
-      if (!(payload.tabId in state)) {
+      if (!(payload.tabId in state.tabs)) {
         return state
       }
 
       const tab = {
-        ...state[payload.tabId],
+        ...state.tabs[payload.tabId],
         ticketIds: payload.ticketIds,
       }
 
-      return { ...state, [payload.tabId]: tab }
+      return {
+        tabs: { ...state.tabs, [payload.tabId]: tab },
+        activeTabIndex: state.activeTabIndex,
+      }
     }
+
+    case TAB_SET_ACTIVE_TAB_INDEX:
+      return {
+        tabs: state.tabs,
+        activeTabIndex: payload,
+      }
 
     case TAB_TOGGLE_SETTINGS:
       return {
-        ...state,
-        [payload.id]: {
-          ...state[payload.id],
-          showSettings: !payload.showSettings,
+        tabs: {
+          ...state.tabs,
+          [payload.id]: {
+            ...state.tabs[payload.id],
+            showSettings: !payload.showSettings,
+          },
         },
+        activeTabIndex: state.activeTabIndex,
+      }
+
+    case TAB_DELETE:
+      const { [payload.id]: tabToDelete, ...restOfTabs } = state.tabs
+      return {
+        tabs: restOfTabs,
+        activeTabIndex: Math.min(
+          Object.keys(restOfTabs).length - 1,
+          state.activeTabIndex,
+        ),
       }
 
     default:

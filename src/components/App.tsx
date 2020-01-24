@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import List from './List'
 import {
   AppBar,
@@ -14,12 +14,13 @@ import { getTabs } from '../common/storage'
 import { searchIssues } from '../common/github'
 import {
   addTab,
-  setTab,
   setTabTickets,
   addTicket,
   createNewTab,
+  setActiveTabIndex,
 } from '../store/actions'
 import { Tab, Ticket, TicketsList } from '../../types'
+import NewTabButton from './NewTabButton'
 import SettingsToggleButton from './SettingsToggleButton'
 import Settings from './Settings'
 
@@ -63,7 +64,11 @@ function TabPanel(props: TabPanelProps) {
 
 const App = ({ tabs = {} }: AppProps) => {
   const classes = useStyles()
-  const [activeTabIndex, setActiveTabIndex] = React.useState(0)
+  const activeTabIndex = useSelector((state: any) => state.tabs.activeTabIndex)
+  const activeTab = useSelector((state: any) => {
+    const id = Object.keys(state.tabs.tabs)[state.tabs.activeTabIndex]
+    return state.tabs.tabs[id]
+  })
   const dispatch = useDispatch()
 
   const tabsArray: Array<Tab> = Object.values(tabs)
@@ -80,7 +85,6 @@ const App = ({ tabs = {} }: AppProps) => {
 
       const tabValues: Array<Tab> = Object.values(tabs)
       tabValues.forEach((tab: Tab) => dispatch(addTab(tab)))
-      dispatch(setTab(tabValues[0].id))
     }
 
     loadTabs()
@@ -93,12 +97,6 @@ const App = ({ tabs = {} }: AppProps) => {
       }
 
       const currentTab: any = tabsArray[newValue]
-      setActiveTabIndex(newValue)
-
-      if (!currentTab.jiraClient) {
-        return
-      }
-
       const fetchedTickets: TicketsList = await listTickets(
         currentTab.jiraClient,
         currentTab.jiraJqlQuery,
@@ -122,11 +120,10 @@ const App = ({ tabs = {} }: AppProps) => {
     },
     [dispatch, tabsArray],
   )
-  const activeTab: any = Object.values(tabs)[activeTabIndex]
 
   useEffect(() => {
     handleTabsChange({}, 0)
-  }, [handleTabsChange])
+  }, [])
 
   return (
     <div className={classes.wrapper}>
@@ -134,34 +131,32 @@ const App = ({ tabs = {} }: AppProps) => {
         <Tabs
           className={classes.tabs}
           value={activeTabIndex}
-          onChange={handleTabsChange}
+          onChange={(event, value) => dispatch(setActiveTabIndex(value))}
           textColor="primary"
         >
           {tabsArray.map((tab: any, index: number) => (
             <MuiTab key={tab.id} label={tab.title || 'New repository'} />
           ))}
-          {/* <NewTabButton
-            onCreate={() => {
-              console.log('<App> NEW TAB', tabsArray.length)
-              setActiveTabIndex(tabsArray.length)
-            }}
-          /> */}
+          <NewTabButton />
           {activeTab && <SettingsToggleButton tab={activeTab} />}
         </Tabs>
       </AppBar>
-      <TabPanel value={activeTabIndex} index={0}>
-        {activeTab && activeTab.showSettings ? (
-          <Settings tab={activeTab} />
-        ) : (
-          <List />
-        )}
-      </TabPanel>
+
+      {tabsArray.map((tab: any, index: number) => (
+        <TabPanel key={tab.id} index={index} value={activeTabIndex}>
+          {activeTab && activeTab.showSettings ? (
+            <Settings tab={tab} />
+          ) : (
+            <List />
+          )}
+        </TabPanel>
+      ))}
     </div>
   )
 }
 
 export default connect(({ tabs }: any) => {
   return {
-    tabs,
+    tabs: tabs.tabs,
   }
 })(App)

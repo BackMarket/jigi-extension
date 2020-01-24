@@ -1,6 +1,6 @@
 import React from 'react'
-import { createStyles, makeStyles, TextField } from '@material-ui/core'
-import { useDispatch } from 'react-redux'
+import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
+import { useDispatch, useSelector } from 'react-redux'
 import { useDebouncedCallback } from 'use-debounce'
 import { Tab } from '../../types'
 import { saveTab } from '../common/storage'
@@ -8,6 +8,7 @@ import {
   updateTabSettings,
   updateTabJiraSettings,
   updateTabGithubSettings,
+  deleteTab,
 } from '../store/actions'
 
 type SettingsProps = {
@@ -38,6 +39,9 @@ const useStyles = makeStyles(() =>
 export default function Settings({ tab }: SettingsProps) {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const isLastTab = useSelector(
+    (state: any) => Object.values(state.tabs.tabs).length <= 1,
+  )
 
   const [updateSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
@@ -149,6 +153,18 @@ export default function Settings({ tab }: SettingsProps) {
           fullWidth
           multiline
         />
+      </div>
+
+      <div className={classes.actions}>
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.action}
+          onClick={() => dispatch(deleteTab(tab))}
+          disabled={isLastTab}
+        >
+          Remove this page
+        </Button>
       </div>
     </form>
   )
