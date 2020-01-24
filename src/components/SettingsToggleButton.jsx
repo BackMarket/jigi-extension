@@ -15,14 +15,11 @@ const useStyles = makeStyles(() =>
 )
 
 export default function SettingsButton(props) {
-  const { tab } = props
+  const { tab, handleClick } = props
   const classes = useStyles()
 
   return (
-    <IconButton
-      className={classes.button}
-      onClick={() => console.log('Toggle settings')}
-    >
+    <IconButton className={classes.button} onClick={handleClick}>
       {tab.showSettings ? <CheckIcon /> : <SettingsIcon />}
     </IconButton>
   )

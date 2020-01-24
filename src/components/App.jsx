@@ -141,15 +141,34 @@ const App = () => {
           {tabs.map((tab, index) => (
             <MuiTab key={tab.id} label={tab.title || 'New repository'} />
           ))}
-          <NewTabButton />
-          {activeTab && <SettingsToggleButton tab={activeTab} />}
+          <NewTabButton
+            handleClick={() =>
+              setTabs([
+                ...tabs,
+                {
+                  title: '',
+                  jiraHost: '',
+                  jiraLogin: '',
+                  jiraToken: '',
+                  jiraJqlQuery: '',
+                  githubOrganisation: '',
+                  githubRepository: '',
+                  githubToken: '',
+                  showSettings: true,
+                },
+              ])
+            }
+          />
+          {activeTab && (
+            <SettingsToggleButton tab={activeTab} handleClick={() => {}} />
+          )}
         </Tabs>
       </AppBar>
 
       {tabs.map((tab, index) => (
         <TabPanel key={tab.id} index={index} value={activeTabIndex}>
           {activeTab && activeTab.showSettings ? (
-            'Settings'
+            <Settings tab={tab} />
           ) : (
             <>
               {loadingTickets ? 'Updating...' : ''}

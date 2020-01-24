@@ -9,14 +9,11 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-export default function NewTabButton() {
+export default function NewTabButton({ handleClick }) {
   const classes = useStyles()
 
   return (
-    <IconButton
-      className={classes.button}
-      onClick={() => console.log('New tab')}
-    >
+    <IconButton className={classes.button} onClick={handleClick}>
       <AddIcon />
     </IconButton>
   )
