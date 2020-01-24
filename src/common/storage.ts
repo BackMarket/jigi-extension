@@ -22,6 +22,7 @@ export async function saveTab(tab: Tab) {
       ...tab,
       githubClient: null,
       jiraClient: null,
+      showSettings: false,
     },
   })
   console.log('SAVED tags', await get('tabs'))
