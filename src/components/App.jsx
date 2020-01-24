@@ -8,7 +8,7 @@ import {
   Tab as MuiTab,
 } from '@material-ui/core'
 
-import { getTabs, saveTab } from '../common/storage'
+import { getTabs, saveTab, saveTabs } from '../common/storage'
 import {
   createClient as createJiraClient,
   list as listTickets,
@@ -185,6 +185,13 @@ const App = () => {
               handleDelete={() => {
                 setTabs(tabs.filter((_, index) => index !== activeTabIndex))
                 setActiveTabIndex(Math.min(tabs.length - 2, activeTabIndex))
+              }}
+              handleChange={newTab => {
+                const newTabs = tabs.map((tab, index) =>
+                  index === activeTabIndex ? newTab : tab,
+                )
+                setTabs(newTabs)
+                saveTabs(newTabs)
               }}
             />
           ) : (

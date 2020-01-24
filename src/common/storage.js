@@ -14,6 +14,8 @@ export function set(key, value) {
 
 export const getTabs = () => get('tabs')
 
+export const saveTabs = tabs => set('tabs', tabs)
+
 export async function saveTab(tab) {
   const tabs = await getTabs()
   await set('tabs', {

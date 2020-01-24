@@ -3,8 +3,6 @@ import { useDebouncedCallback } from 'use-debounce'
 
 import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
 
-import { saveTab } from '../common/storage'
-
 const useStyles = makeStyles(() =>
   createStyles({
     form: {
@@ -26,22 +24,27 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-export default function Settings({ tab, handleDelete, deleteDisabled }) {
+export default function Settings({
+  tab,
+  handleDelete,
+  deleteDisabled,
+  handleChange,
+}) {
   const classes = useStyles()
 
   const [updateSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
-    saveTab(newTab)
+    handleChange(newTab)
   }, 100)
 
   const [updateJiraSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
-    saveTab(newTab)
+    handleChange(newTab)
   }, 1000)
 
   const [updateGithubSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
-    saveTab(newTab)
+    handleChange(newTab)
   }, 1000)
 
   return (
