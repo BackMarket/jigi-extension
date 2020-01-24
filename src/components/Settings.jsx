@@ -26,7 +26,7 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-export default function Settings({ tab }) {
+export default function Settings({ tab, handleDelete, deleteDisabled }) {
   const classes = useStyles()
 
   const [updateSetting] = useDebouncedCallback((field, value) => {
@@ -147,7 +147,8 @@ export default function Settings({ tab }) {
           variant="contained"
           color="secondary"
           className={classes.action}
-          onClick={() => console.log('Delete tab')}
+          onClick={handleDelete}
+          disabled={deleteDisabled}
         >
           Remove this page
         </Button>

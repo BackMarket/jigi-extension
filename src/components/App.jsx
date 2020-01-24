@@ -142,7 +142,7 @@ const App = () => {
             <MuiTab key={tab.id} label={tab.title || 'New repository'} />
           ))}
           <NewTabButton
-            handleClick={() =>
+            handleClick={() => {
               setTabs([
                 ...tabs,
                 {
@@ -157,10 +157,22 @@ const App = () => {
                   showSettings: true,
                 },
               ])
-            }
+              setActiveTabIndex(tabs.length)
+            }}
           />
           {activeTab && (
-            <SettingsToggleButton tab={activeTab} handleClick={() => {}} />
+            <SettingsToggleButton
+              tab={activeTab}
+              handleClick={() => {
+                setTabs(
+                  tabs.map((tab, index) =>
+                    index === activeTabIndex
+                      ? { ...tab, showSettings: !tab.showSettings }
+                      : tab,
+                  ),
+                )
+              }}
+            />
           )}
         </Tabs>
       </AppBar>
@@ -168,7 +180,14 @@ const App = () => {
       {tabs.map((tab, index) => (
         <TabPanel key={tab.id} index={index} value={activeTabIndex}>
           {activeTab && activeTab.showSettings ? (
-            <Settings tab={tab} />
+            <Settings
+              tab={tab}
+              deleteDisabled={tabs.length <= 1}
+              handleDelete={() => {
+                setActiveTabIndex(Math.min(tabs.length - 2, activeTabIndex))
+                setTabs([...tabs].splice(activeTabIndex, 1))
+              }}
+            />
           ) : (
             <>
               {loadingTickets ? 'Updating...' : ''}

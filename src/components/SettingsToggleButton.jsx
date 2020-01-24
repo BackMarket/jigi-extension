@@ -14,8 +14,7 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-export default function SettingsButton(props) {
-  const { tab, handleClick } = props
+export default function SettingsButton({ tab, handleClick }) {
   const classes = useStyles()
 
   return (
