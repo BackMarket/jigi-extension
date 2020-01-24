@@ -155,7 +155,12 @@ const List = ({ tickets }) => {
                       }
                       return (
                         <Chip
-                          style={{ background, color, marginRight: '5px' }}
+                          style={{
+                            background,
+                            color,
+                            marginRight: '3px',
+                            marginBottom: '3px',
+                          }}
                           label={pullRequest.id}
                           key={pullRequest.id}
                           onClick={() => window.open(pullRequest.url)}
