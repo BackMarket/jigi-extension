@@ -8,7 +8,7 @@ import {
   Tab as MuiTab,
 } from '@material-ui/core'
 
-import { getTabs } from '../common/storage'
+import { getTabs, saveTab } from '../common/storage'
 import {
   createClient as createJiraClient,
   list as listTickets,
@@ -118,6 +118,8 @@ const App = () => {
         }),
       )
 
+      saveTab({ ...currentTab, tickets: ticketsToAdd })
+
       setTickets(ticketsToAdd)
       setIsLoadingTickets(false)
     }
@@ -148,10 +150,11 @@ const App = () => {
         <TabPanel key={tab.id} index={index} value={activeTabIndex}>
           {activeTab && activeTab.showSettings ? (
             'Settings'
-          ) : loadingTickets ? (
-            'Loading...'
           ) : (
-            <List tickets={tickets} />
+            <>
+              {loadingTickets ? 'Updating...' : ''}
+              <List tickets={tickets} />}
+            </>
           )}
         </TabPanel>
       ))}
