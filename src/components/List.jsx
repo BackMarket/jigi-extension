@@ -31,12 +31,14 @@ const useStyles = makeStyles(() =>
     },
     title: {
       flex: 1,
-      maxWidth: '300px',
+      maxWidth: '400px',
       display: 'inline-block',
       marginLeft: theme.spacing(4),
       fontSize: 'inherit',
     },
-    issues: {},
+    issues: {
+      marginTop: theme.spacing(4),
+    },
     issue: {
       display: 'inline-block',
       marginRight: theme.spacing(4),
@@ -66,6 +68,16 @@ const useStyles = makeStyles(() =>
       color: '#42526e',
       borderColor: '#c1c7d0',
     },
+    expanded: {
+      flexDirection: 'column',
+      margin: '0 10px',
+    },
+    markdown: {
+      marginTop: theme.spacing(),
+      padding: '0 10px',
+      borderRadius: '5px',
+      background: '#f5f5f5',
+    },
   }),
 )
 
@@ -82,9 +94,6 @@ const ExpansionPanel = withStyles({
     '&$expanded': {
       margin: 'auto',
     },
-  },
-  expanded: {
-    flexDirection: 'column',
   },
 })(MuiExpansionPanel)
 
@@ -126,23 +135,45 @@ const List = ({ tickets }) => {
                   <Typography noWrap className={classes.title}>
                     {title}
                   </Typography>
-                  <span className={classes.title}>{title}</span>
                 </div>
 
                 {issues.length > 0 ? (
                   <div className={classes.issues}>
                     {issues.map(({ pullRequest = { id: 'XXX' } }) => {
+                      let background = null
+                      let color = null
+
+                      if (pullRequest.merged) {
+                        background = '#6F42C1'
+                        color = 'white'
+                      } else if (pullRequest.mergeableState === 'clean') {
+                        background = '#2CBE4E'
+                        color = 'white'
+                      } else if (pullRequest.mergeableState === 'unstable') {
+                        background = '#CB2431'
+                        color = 'white'
+                      }
                       return (
-                        <Chip label={pullRequest.id} key={pullRequest.id} />
+                        <Chip
+                          style={{ background, color, marginRight: '5px' }}
+                          label={pullRequest.id}
+                          key={pullRequest.id}
+                        />
                       )
                     })}
                   </div>
                 ) : null}
               </div>
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.expanded}>
-              <ReactMarkdown source={description} />
-            </ExpansionPanelDetails>
+            {description && (
+              <ExpansionPanelDetails className={classes.expanded}>
+                Ticket Description:
+                <ReactMarkdown
+                  source={description}
+                  className={classes.markdown}
+                />
+              </ExpansionPanelDetails>
+            )}
           </ExpansionPanel>
         ),
       )}
