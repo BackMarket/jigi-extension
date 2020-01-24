@@ -1,6 +1,0 @@
-export const GITHUB_TOKEN = '4f89db5a2cb0b95702c88eaad4848e0a1bbb3b9a'
-export const GITHUB_ORGANISATION = 'backmarket'
-export const GITHUB_REPOSITORY = 'front'
-export const JIRA_HOST = 'backmarket.atlassian.net'
-export const JIRA_TOKEN = 'vSv7Ov4OahKPUanhjWsG8D08'
-export const JIRA_LOGIN = 'clement.prevot@backmarket.com'
