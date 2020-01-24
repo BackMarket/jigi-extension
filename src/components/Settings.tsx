@@ -54,7 +54,7 @@ export default function Settings({ tab }: SettingsProps) {
   const [updateGithubSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
     saveTab(newTab)
-    dispatch(updateTabGithubSettings(field))
+    dispatch(updateTabGithubSettings(newTab))
   }, 1000)
 
   return (
