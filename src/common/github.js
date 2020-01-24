@@ -50,8 +50,8 @@ export async function searchIssues(
           state,
           assignee,
           pullRequest: {
-            id: pullRequestId,
-            url: pull_request.html_url,
+            id: pullRequest.number,
+            url: pullRequest.html_url,
             state: pullRequest.state,
             title: pullRequest.title,
             user: pullRequest.user,
