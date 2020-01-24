@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { makeStyles, createStyles, withStyles, Select } from '@material-ui/core'
+import { makeStyles, createStyles, withStyles } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -42,6 +42,28 @@ const useStyles = makeStyles(() =>
       border: '1px solid black',
       borderRadius: '4px',
     },
+    status: {
+      border: '1px solid transparent',
+      borderRadius: '3px',
+      padding: '0.1rem 0.3rem',
+      display: 'inline-block',
+      textTransform: 'uppercase',
+      fontWeight: '600',
+      fontSize: '11px',
+      margin: 'auto',
+    },
+    statusGreen: {
+      color: '#00875a',
+      borderColor: '#abf5d1',
+    },
+    statusBlue: {
+      color: '#0052cc',
+      borderColor: '#b3d4ff',
+    },
+    statusGrey: {
+      color: '#42526e',
+      borderColor: '#c1c7d0',
+    },
   }),
 )
 
@@ -68,8 +90,6 @@ const List = ({ tickets }) => {
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState(false)
 
-  const statusList = ['to-do', 'Running']
-
   const handlePanelChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
@@ -88,21 +108,23 @@ const List = ({ tickets }) => {
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div className={classes.ticket}>
                 <div className={classes.information}>
-                  <Select
-                    onClick={event => event.stopPropagation()}
-                    native
-                    value={status.name}
+                  <span
+                    className={[
+                      classes.status,
+                      {
+                        yellow: classes.statusBlue,
+                        blue: classes.statusBlue,
+                        green: classes.statusGreen,
+                      }[status.color] || classes.statusGrey,
+                    ].join(' ')}
                   >
-                    {statusList.map(statusListItem => (
-                      <option key={statusListItem} value={statusListItem}>
-                        {statusListItem}
-                      </option>
-                    ))}
-                  </Select>
+                    {status.name}
+                  </span>
 
                   <Typography noWrap className={classes.title}>
                     {title}
                   </Typography>
+                  <span className={classes.title}>{title}</span>
                 </div>
 
                 {issues.length > 0 ? (
