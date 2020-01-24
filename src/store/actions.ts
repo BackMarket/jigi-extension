@@ -1,7 +1,7 @@
 import { Tab, Ticket, IssuesList } from '../../types'
 import { SetTabTicketsPayload } from './reducers/tabs'
 
-export const TAB_ADD = Symbol('Add a tab')
+export const TAB_ADD = Symbol('Add an existing tab')
 export const TAB_SET_TICKETS = Symbol('Set JIRA tickets of one particular Tab')
 export const TAB_SHOW_SETTINGS = Symbol('Show a tab settings')
 export const TAB_HIDE_SETTINGS = Symbol('Hide a tab settings')
@@ -13,7 +13,7 @@ export const ISSUES_ADD = Symbol('Add a github issue')
 
 export const TAB_SET = Symbol('Set active tab')
 
-export const addTab = (payload: Omit<Tab, 'showSettings'>): any => ({
+export const addTab = (payload: Tab): any => ({
   type: TAB_ADD,
   payload,
 })
@@ -33,7 +33,7 @@ export const hideTabSettings = (payload: Tab): any => ({
   payload,
 })
 
-export const saveTabSettings = (payload: { tab: Tab; values: any }): any => ({
+export const saveTabSettings = (payload: Tab): any => ({
   type: TAB_SAVE_SETTINGS,
   payload,
 })

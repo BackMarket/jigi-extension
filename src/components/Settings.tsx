@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
 import { connect } from 'react-redux'
-import { hideTabSettings, saveTabSettings } from '../store/actions'
+import { hideTabSettings, addTab } from '../store/actions'
 import { Tab } from '../../types'
 
 type SettingsProps = {
@@ -33,26 +33,52 @@ const useStyles = makeStyles(() =>
 
 function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
   const classes = useStyles()
+  const [title, setTitle] = useState(tab.title)
+  const [jiraHost, setJiraHost] = useState(tab.jiraHost)
+  const [jiraLogin, setJiraLogin] = useState(tab.jiraLogin)
+  const [jiraToken, setJiraToken] = useState(tab.jiraToken)
+  const [jiraJqlQuery, setJiraJqlQuery] = useState(tab.jiraJqlQuery)
+  const [githubOrganisation, setGithubOrganisation] = useState(
+    tab.githubOrganisation,
+  )
+  const [githubRepository, setGithubRepository] = useState(tab.githubRepository)
+  const [githubToken, setGithubToken] = useState(tab.githubToken)
+
   return (
     <form
       className={classes.form}
       autoComplete="off"
-      onSubmit={values => handleSubmit(tab, values)}
+      onSubmit={event =>
+        handleSubmit(event, tab, {
+          title,
+          jiraHost,
+          jiraLogin,
+          jiraToken,
+          jiraJqlQuery,
+          githubOrganisation,
+          githubRepository,
+          githubToken,
+        })
+      }
     >
       <div className={classes.fields}>
         <TextField
           className={classes.field}
           id="title"
           label="Title"
-          value={tab.title}
+          placeholder="Give a name to your tab..."
+          value={title}
+          onChange={event => setTitle(event.target.value)}
           required
           fullWidth
         />
         <TextField
           className={classes.field}
-          id="jiraDomain"
+          id="jiraHost"
           label="JIRA domain"
-          value={tab.jiraHost}
+          placeholder="Ex: mycompany.atlassian.net"
+          value={jiraHost}
+          onChange={event => setJiraHost(event.target.value)}
           required
           fullWidth
         />
@@ -60,7 +86,9 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
           className={classes.field}
           id="jiraLogin"
           label="JIRA login"
-          value={tab.jiraLogin}
+          placeholder="E-mail address"
+          value={jiraLogin}
+          onChange={event => setJiraLogin(event.target.value)}
           required
           fullWidth
         />
@@ -68,7 +96,8 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
           className={classes.field}
           id="jiraToken"
           label="JIRA token"
-          value={tab.jiraToken}
+          value={jiraToken}
+          onChange={event => setJiraToken(event.target.value)}
           required
           fullWidth
         />
@@ -76,7 +105,8 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
           className={classes.field}
           id="jiraJqlQuery"
           label="JIRA JQL Query"
-          value={tab.jiraHost}
+          value={jiraJqlQuery}
+          onChange={event => setJiraJqlQuery(event.target.value)}
           required
           fullWidth
           multiline
@@ -85,7 +115,8 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
           className={classes.field}
           id="githubOrganisation"
           label="GitHub token"
-          value={tab.githubOrganisation}
+          value={githubOrganisation}
+          onChange={event => setGithubOrganisation(event.target.value)}
           required
           fullWidth
           multiline
@@ -94,7 +125,8 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
           className={classes.field}
           id="githubRepository"
           label="GitHub token"
-          value={tab.githubRepository}
+          value={githubRepository}
+          onChange={event => setGithubRepository(event.target.value)}
           required
           fullWidth
           multiline
@@ -103,7 +135,8 @@ function Settings({ tab, handleSubmit, handleCancel }: SettingsProps) {
           className={classes.field}
           id="githubToken"
           label="GitHub token"
-          value={tab.githubToken}
+          value={githubToken}
+          onChange={event => setGithubToken(event.target.value)}
           required
           fullWidth
           multiline
@@ -135,8 +168,9 @@ export default connect(null, dispatch => ({
   handleCancel: (tab: Tab) => {
     dispatch(hideTabSettings(tab))
   },
-  handleSubmit: (tab: Tab, values: any) => {
-    dispatch(saveTabSettings({ tab, values }))
+  handleSubmit: (event: any, tab: Tab, values: any) => {
+    event.preventDefault()
+    dispatch(addTab({ ...tab, ...values }))
     dispatch(hideTabSettings(tab))
   },
 }))(Settings)

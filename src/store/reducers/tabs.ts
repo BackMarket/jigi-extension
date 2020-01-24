@@ -4,9 +4,10 @@ import { createClient as createJiraClient } from '../../common/jira'
 
 import {
   TAB_ADD,
+  TAB_SET_TICKETS,
   TAB_SHOW_SETTINGS,
   TAB_HIDE_SETTINGS,
-  TAB_SET_TICKETS,
+  TAB_SAVE_SETTINGS,
 } from '../actions'
 
 export type AddTabAction = {
@@ -30,7 +31,8 @@ export default (state: any = {}, action: Action) => {
   const { type, payload }: Action = action
 
   switch (type) {
-    case TAB_ADD: {
+    case TAB_ADD:
+    case TAB_SAVE_SETTINGS:
       return {
         ...state,
         [payload.id]: {
@@ -53,7 +55,7 @@ export default (state: any = {}, action: Action) => {
           showSettings: false,
         },
       }
-    }
+
     case TAB_SET_TICKETS: {
       if (!(payload.tabId in state)) {
         return state
