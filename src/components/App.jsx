@@ -16,6 +16,7 @@ import {
 import {
   createClient as createGithubClient,
   searchIssues,
+  getPullRequest,
 } from '../common/github'
 
 import TabPanel from './TabPanel'
@@ -106,6 +107,17 @@ const App = () => {
         jiraClient,
         currentTab.jiraJqlQuery,
       )
+
+      if (githubClient) {
+        console.log(
+          await getPullRequest(
+            githubClient,
+            currentTab.githubOrganisation,
+            currentTab.githubRepository,
+            '3695',
+          ),
+        )
+      }
 
       const ticketsToAdd = await Promise.all(
         fetchedTickets.map(async ticket => {

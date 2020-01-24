@@ -60,6 +60,7 @@ export async function searchIssues(
             merged: pullRequest.merged,
             mergeable: pullRequest.mergeable,
             mergeableState: pullRequest.mergeable_state,
+            hasReview: pullRequest.review_comments > 0,
           },
           body,
         }

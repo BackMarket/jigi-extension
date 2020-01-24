@@ -131,7 +131,10 @@ const List = ({ tickets }) => {
                   <div className={classes.issues}>
                     {issues.map(({ pullRequest = { id: 'XXX' } }) => {
                       return (
-                        <Chip label={pullRequest.id} key={pullRequest.id} />
+                        <Chip
+                          label={`#${pullRequest.id}`}
+                          key={pullRequest.id}
+                        />
                       )
                     })}
                   </div>
