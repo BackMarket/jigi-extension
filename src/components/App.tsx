@@ -9,21 +9,19 @@ import {
   makeStyles,
   createStyles,
 } from '@material-ui/core'
-import SettingsToggleButton from '../SettingsToggleButton'
-import Settings from '../Settings'
-import { Tab } from '../../../types'
-import { list as listTickets } from '../../common/jira'
-import { getTabs } from '../../common/storage'
-import { searchIssues } from '../../common/github'
+import { list as listTickets } from '../common/jira'
+import { getTabs } from '../common/storage'
+import { searchIssues } from '../common/github'
 import {
   addTab,
   setTab,
   setTabTickets,
   addTicket,
   createNewTab,
-} from '../../store/actions'
-import { Ticket, TicketsList } from '../../../types'
-// import NewTabButton from '../NewTabButton'
+} from '../store/actions'
+import { Tab, Ticket, TicketsList } from '../../types'
+import SettingsToggleButton from './SettingsToggleButton'
+import Settings from './Settings'
 
 interface TabPanelProps {
   children?: React.ReactNode

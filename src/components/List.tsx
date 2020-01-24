@@ -1,21 +1,18 @@
 import React from 'react'
-// import TextField from '@material-ui/core/TextField'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-// import SearchIcon from '@material-ui/icons/Search'
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel'
 import {
   makeStyles,
   createStyles,
-  // Grid,
   withStyles,
   Select,
   Typography,
 } from '@material-ui/core'
-import theme from '../../theme'
+import theme from '../theme'
 import { connect } from 'react-redux'
-import { Ticket, IssuesList, TicketsList } from '../../../types'
+import { Ticket, IssuesList, TicketsList } from '../../types'
 
 interface ListProps {
   tickets: TicketsList
