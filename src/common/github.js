@@ -1,22 +1,15 @@
-import { Issue, IssuesList } from '../../types'
-
 import Octokit from '@octokit/rest'
 
-export type SearchIssuesParams = {
-  maxResults?: number
-  query?: string
-}
-
-export function createClient(token: string): Octokit {
+export function createClient(token) {
   return new Octokit({
     auth: token,
   })
 }
 
 export async function searchIssues(
-  client: Octokit,
-  { query = '', maxResults = 50 }: SearchIssuesParams = {},
-): Promise<IssuesList> {
+  client,
+  { query = '', maxResults = 50 } = {},
+) {
   const {
     data: { items: issues },
   } = await client.search.issuesAndPullRequests({
@@ -34,7 +27,7 @@ export async function searchIssues(
       assignee,
       pull_request = { html_url: '' },
       body,
-    }): Issue => ({
+    }) => ({
       id,
       title,
       user: {
@@ -47,7 +40,7 @@ export async function searchIssues(
       state,
       assignee,
       pullRequest: {
-        id: pull_request.html_url!.split('/').pop() || '',
+        id: pull_request.html_url.split('/').pop() || '',
         url: pull_request.html_url,
       },
       body,

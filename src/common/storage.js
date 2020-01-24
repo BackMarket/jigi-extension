@@ -1,12 +1,10 @@
-import { Tab } from '../../types'
-
-export function get(key: string): Promise<any> {
+export function get(key) {
   return new Promise(resolve => {
-    chrome.storage.local.get([key], (result: any) => resolve(result[key]))
+    chrome.storage.local.get([key], result => resolve(result[key]))
   })
 }
 
-export function set(key: string, value: any): Promise<void> {
+export function set(key, value) {
   return new Promise(resolve => {
     chrome.storage.local.set({ [key]: value }, resolve)
   })
@@ -14,7 +12,7 @@ export function set(key: string, value: any): Promise<void> {
 
 export const getTabs = () => get('tabs')
 
-export async function saveTab(tab: Tab) {
+export async function saveTab(tab) {
   const tabs = await getTabs()
   await set('tabs', {
     ...tabs,
