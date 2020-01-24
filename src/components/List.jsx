@@ -50,9 +50,9 @@ const useStyles = makeStyles(() =>
       display: 'inline-block',
       textTransform: 'uppercase',
       fontWeight: '600',
-      fontSize: '10px',
+      fontSize: '12px',
       marginBottom: 'auto',
-      marginTop: '0',
+      marginTop: '2px',
     },
     statusGreen: {
       color: '#00875a',
