@@ -1,5 +1,4 @@
 import React from 'react'
-import { useDebouncedCallback } from 'use-debounce'
 
 import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
 
@@ -32,20 +31,10 @@ export default function Settings({
 }) {
   const classes = useStyles()
 
-  const [updateSetting] = useDebouncedCallback((field, value) => {
+  const updateSetting = (field, value) => {
     const newTab = { ...tab, [field]: value }
     handleChange(newTab)
-  }, 100)
-
-  const [updateJiraSetting] = useDebouncedCallback((field, value) => {
-    const newTab = { ...tab, [field]: value }
-    handleChange(newTab)
-  }, 1000)
-
-  const [updateGithubSetting] = useDebouncedCallback((field, value) => {
-    const newTab = { ...tab, [field]: value }
-    handleChange(newTab)
-  }, 1000)
+  }
 
   return (
     <form
@@ -72,7 +61,7 @@ export default function Settings({
           label="JIRA domain"
           placeholder="Ex: mycompany.atlassian.net"
           defaultValue={tab.jiraHost}
-          onChange={event => updateJiraSetting('jiraHost', event.target.value)}
+          onChange={event => updateSetting('jiraHost', event.target.value)}
           required
           fullWidth
         />
@@ -82,7 +71,7 @@ export default function Settings({
           label="JIRA login"
           placeholder="E-mail address"
           defaultValue={tab.jiraLogin}
-          onChange={event => updateJiraSetting('jiraLogin', event.target.value)}
+          onChange={event => updateSetting('jiraLogin', event.target.value)}
           required
           fullWidth
         />
@@ -91,7 +80,7 @@ export default function Settings({
           id="jiraToken"
           label="JIRA token"
           defaultValue={tab.jiraToken}
-          onChange={event => updateJiraSetting('jiraToken', event.target.value)}
+          onChange={event => updateSetting('jiraToken', event.target.value)}
           required
           fullWidth
         />
@@ -100,9 +89,7 @@ export default function Settings({
           id="jiraJqlQuery"
           label="JIRA JQL Query"
           defaultValue={tab.jiraJqlQuery}
-          onChange={event =>
-            updateJiraSetting('jiraJqlQuery', event.target.value)
-          }
+          onChange={event => updateSetting('jiraJqlQuery', event.target.value)}
           required
           fullWidth
           multiline
@@ -113,7 +100,7 @@ export default function Settings({
           label="GitHub organization or username"
           defaultValue={tab.githubOrganisation}
           onChange={event =>
-            updateGithubSetting('githubOrganisation', event.target.value)
+            updateSetting('githubOrganisation', event.target.value)
           }
           required
           fullWidth
@@ -125,7 +112,7 @@ export default function Settings({
           label="GitHub repository"
           defaultValue={tab.githubRepository}
           onChange={event =>
-            updateGithubSetting('githubRepository', event.target.value)
+            updateSetting('githubRepository', event.target.value)
           }
           required
           fullWidth
@@ -136,9 +123,7 @@ export default function Settings({
           id="githubToken"
           label="GitHub token"
           defaultValue={tab.githubToken}
-          onChange={event =>
-            updateGithubSetting('githubToken', event.target.value)
-          }
+          onChange={event => updateSetting('githubToken', event.target.value)}
           required
           fullWidth
           multiline
