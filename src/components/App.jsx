@@ -115,9 +115,14 @@ const App = () => {
 
           if (githubClient) {
             try {
-              issues = await searchIssues(githubClient, {
-                query: `is:pr in:title [${ticket.id}]`,
-              })
+              issues = await searchIssues(
+                githubClient,
+                currentTab.githubOrganisation,
+                currentTab.githubRepository,
+                {
+                  query: `is:pr in:title [${ticket.id}]`,
+                },
+              )
             } catch (err) {
               console.error(err)
             }
