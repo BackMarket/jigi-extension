@@ -41,20 +41,20 @@ export default function Settings({ tab }: SettingsProps) {
 
   const [updateSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
-    dispatch(updateTabSettings(newTab))
     saveTab(newTab)
+    dispatch(updateTabSettings(newTab))
   }, 100)
 
   const [updateJiraSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
-    dispatch(updateTabJiraSettings(newTab))
     saveTab(newTab)
+    dispatch(updateTabJiraSettings(newTab))
   }, 1000)
 
   const [updateGithubSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
-    dispatch(updateTabGithubSettings(field))
     saveTab(newTab)
+    dispatch(updateTabGithubSettings(field))
   }, 1000)
 
   return (

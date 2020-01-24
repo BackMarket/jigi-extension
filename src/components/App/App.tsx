@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import List from './List'
 import {
   AppBar,
@@ -17,6 +17,7 @@ import { getTabs } from '../../common/storage'
 import { searchIssues } from '../../common/github'
 import {
   addTab,
+  setTab,
   setTabTickets,
   addTicket,
   createNewTab,
@@ -112,15 +113,21 @@ const App = ({
     handleTabsChange({}, 0)
   }, [handleTabsChange])
 
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    getTabs().then((tabs: Array<Tab> = []) => {
-      if (tabs.length > 0) {
-        tabs.forEach(addTab)
+    getTabs().then((tabs: any = {}) => {
+      console.log('LOADED tabs', tabs)
+      const tabValues: Array<Tab> = Object.values(tabs)
+
+      if (tabValues.length > 0) {
+        tabValues.forEach((tab: Tab) => dispatch(addTab(tab)))
+        dispatch(setTab(tabValues[0].id))
       } else {
         createNewTab()
       }
     })
-  }, [addTab, createNewTab])
+  }, [addTab, createNewTab, dispatch])
 
   return (
     <div className={classes.wrapper}>

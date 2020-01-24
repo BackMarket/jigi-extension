@@ -1,17 +1,14 @@
 import { Tab } from '../../types'
 
-// TODO @amercier Cross-browser support
-const syncStorage = chrome.storage.sync
-
 export function get(key: string): Promise<any> {
   return new Promise(resolve => {
-    syncStorage.get({ key }, resolve)
+    chrome.storage.local.get([key], result => resolve(result[key]))
   })
 }
 
 export function set(key: string, value: any): Promise<void> {
   return new Promise(resolve => {
-    syncStorage.set({ [key]: value }, resolve)
+    chrome.storage.local.set({ [key]: value }, resolve)
   })
 }
 
@@ -19,5 +16,13 @@ export const getTabs = () => get('tabs')
 
 export async function saveTab(tab: Tab) {
   const tabs = await getTabs()
-  return set('tags', { ...tabs, [tab.id]: tab })
+  await set('tabs', {
+    ...tabs,
+    [tab.id]: {
+      ...tab,
+      githubClient: null,
+      jiraClient: null,
+    },
+  })
+  console.log('SAVED tags', await get('tabs'))
 }
