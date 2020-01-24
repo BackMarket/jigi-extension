@@ -158,6 +158,7 @@ const List = ({ tickets }) => {
                           style={{ background, color, marginRight: '5px' }}
                           label={pullRequest.id}
                           key={pullRequest.id}
+                          onClick={() => window.open(pullRequest.url)}
                         />
                       )
                     })}
