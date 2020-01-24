@@ -163,7 +163,10 @@ const List = ({ tickets }) => {
                           }}
                           label={pullRequest.id}
                           key={pullRequest.id}
-                          onClick={() => window.open(pullRequest.url)}
+                          onClick={event => {
+                            event.stopPropagation()
+                            window.open(pullRequest.url)
+                          }}
                         />
                       )
                     })}
