@@ -1,6 +1,6 @@
 import React from 'react'
 import { createStyles, makeStyles, IconButton } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
+import CheckIcon from '@material-ui/icons/Check'
 import SettingsIcon from '@material-ui/icons/Settings'
 import { connect } from 'react-redux'
 import { toggleTabSettings } from '../store/actions'
@@ -30,7 +30,7 @@ function SettingsButton(props: SettingsButtonProps) {
       className={classes.button}
       onClick={() => handleButtonClick(tab)}
     >
-      {tab.showSettings ? <CloseIcon /> : <SettingsIcon />}
+      {tab.showSettings ? <CheckIcon /> : <SettingsIcon />}
     </IconButton>
   )
 }
