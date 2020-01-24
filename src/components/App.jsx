@@ -35,6 +35,18 @@ const useStyles = makeStyles(() =>
   }),
 )
 
+const NEW_TAB = {
+  title: '',
+  jiraHost: '',
+  jiraLogin: '',
+  jiraToken: '',
+  jiraJqlQuery: '',
+  githubOrganisation: '',
+  githubRepository: '',
+  githubToken: '',
+  showSettings: true,
+}
+
 const App = () => {
   const classes = useStyles()
   const [tabs, setTabs] = useState([])
@@ -143,20 +155,7 @@ const App = () => {
           ))}
           <NewTabButton
             handleClick={() => {
-              setTabs([
-                ...tabs,
-                {
-                  title: '',
-                  jiraHost: '',
-                  jiraLogin: '',
-                  jiraToken: '',
-                  jiraJqlQuery: '',
-                  githubOrganisation: '',
-                  githubRepository: '',
-                  githubToken: '',
-                  showSettings: true,
-                },
-              ])
+              setTabs([...tabs, NEW_TAB])
               setActiveTabIndex(tabs.length)
             }}
           />
@@ -179,19 +178,19 @@ const App = () => {
 
       {tabs.map((tab, index) => (
         <TabPanel key={tab.id} index={index} value={activeTabIndex}>
-          {activeTab && activeTab.showSettings ? (
+          {tab.showSettings ? (
             <Settings
               tab={tab}
               deleteDisabled={tabs.length <= 1}
               handleDelete={() => {
+                setTabs(tabs.filter((_, index) => index !== activeTabIndex))
                 setActiveTabIndex(Math.min(tabs.length - 2, activeTabIndex))
-                setTabs([...tabs].splice(activeTabIndex, 1))
               }}
             />
           ) : (
             <>
               {loadingTickets ? 'Updating...' : ''}
-              <List tickets={tickets} />}
+              <List tickets={tickets} />
             </>
           )}
         </TabPanel>
