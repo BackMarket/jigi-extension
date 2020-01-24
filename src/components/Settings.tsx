@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import debounce from 'debounce'
+import React from 'react'
 import { createStyles, makeStyles, TextField } from '@material-ui/core'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useDebouncedCallback } from 'use-debounce'
 import { Tab } from '../../types'
 import { saveTab } from '../common/storage'
 import {
@@ -12,9 +12,6 @@ import {
 
 type SettingsProps = {
   tab: Tab
-  updateTabSettings: Function
-  updateTabJiraSettings: Function
-  updateTabGithubSettings: Function
 }
 
 const useStyles = makeStyles(() =>
@@ -38,82 +35,27 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-function Settings({
-  tab,
-  updateTabSettings,
-  updateTabJiraSettings,
-  updateTabGithubSettings,
-}: SettingsProps) {
-  const { id } = tab
+export default function Settings({ tab }: SettingsProps) {
   const classes = useStyles()
-  const [title, setTitle] = useState(tab.title)
-  const [jiraHost, setJiraHost] = useState(tab.jiraHost)
-  const [jiraLogin, setJiraLogin] = useState(tab.jiraLogin)
-  const [jiraToken, setJiraToken] = useState(tab.jiraToken)
-  const [jiraJqlQuery, setJiraJqlQuery] = useState(tab.jiraJqlQuery)
-  const [githubOrganisation, setGithubOrganisation] = useState(
-    tab.githubOrganisation,
-  )
-  const [githubRepository, setGithubRepository] = useState(tab.githubRepository)
-  const [githubToken, setGithubToken] = useState(tab.githubToken)
+  const dispatch = useDispatch()
 
-  useEffect(() => {
-    updateTabSettings({
-      id,
-      title,
-    })
-  }, [id, title, updateTabSettings])
+  const [updateSetting] = useDebouncedCallback((field, value) => {
+    const newTab = { ...tab, [field]: value }
+    dispatch(updateTabSettings(newTab))
+    saveTab(newTab)
+  }, 100)
 
-  useEffect(
-    debounce(() => {
-      updateTabJiraSettings({
-        id,
-        jiraHost,
-        jiraLogin,
-        jiraToken,
-        jiraJqlQuery,
-      })
-    }, 1000),
-    [jiraHost, jiraLogin, jiraToken, jiraJqlQuery],
-  )
+  const [updateJiraSetting] = useDebouncedCallback((field, value) => {
+    const newTab = { ...tab, [field]: value }
+    dispatch(updateTabJiraSettings(newTab))
+    saveTab(newTab)
+  }, 1000)
 
-  useEffect(
-    debounce(() => {
-      updateTabGithubSettings({
-        id,
-        githubOrganisation,
-        githubRepository,
-        githubToken,
-      })
-    }, 500),
-    [githubOrganisation, githubRepository, githubToken],
-  )
-
-  useEffect(
-    debounce(() => {
-      saveTab({
-        id,
-        title,
-        jiraHost,
-        jiraLogin,
-        jiraToken,
-        jiraJqlQuery,
-        githubOrganisation,
-        githubRepository,
-        githubToken,
-      })
-    }, 200),
-    [
-      title,
-      jiraHost,
-      jiraLogin,
-      jiraToken,
-      jiraJqlQuery,
-      githubOrganisation,
-      githubRepository,
-      githubToken,
-    ],
-  )
+  const [updateGithubSetting] = useDebouncedCallback((field, value) => {
+    const newTab = { ...tab, [field]: value }
+    dispatch(updateTabGithubSettings(field))
+    saveTab(newTab)
+  }, 1000)
 
   return (
     <form
@@ -129,8 +71,8 @@ function Settings({
           id="title"
           label="Title"
           placeholder="Give a name to your tab..."
-          value={title}
-          onChange={event => setTitle(event.target.value)}
+          defaultValue={tab.title}
+          onChange={e => updateSetting('title', e.target.value)}
           required
           fullWidth
         />
@@ -139,8 +81,8 @@ function Settings({
           id="jiraHost"
           label="JIRA domain"
           placeholder="Ex: mycompany.atlassian.net"
-          value={jiraHost}
-          onChange={event => setJiraHost(event.target.value)}
+          defaultValue={tab.jiraHost}
+          onChange={e => updateJiraSetting('jiraHost', e.target.value)}
           required
           fullWidth
         />
@@ -149,8 +91,8 @@ function Settings({
           id="jiraLogin"
           label="JIRA login"
           placeholder="E-mail address"
-          value={jiraLogin}
-          onChange={event => setJiraLogin(event.target.value)}
+          defaultValue={tab.jiraLogin}
+          onChange={e => updateJiraSetting('jiraLogin', e.target.value)}
           required
           fullWidth
         />
@@ -158,8 +100,8 @@ function Settings({
           className={classes.field}
           id="jiraToken"
           label="JIRA token"
-          value={jiraToken}
-          onChange={event => setJiraToken(event.target.value)}
+          defaultValue={tab.jiraToken}
+          onChange={e => updateJiraSetting('jiraToken', e.target.value)}
           required
           fullWidth
         />
@@ -167,8 +109,8 @@ function Settings({
           className={classes.field}
           id="jiraJqlQuery"
           label="JIRA JQL Query"
-          value={jiraJqlQuery}
-          onChange={event => setJiraJqlQuery(event.target.value)}
+          defaultValue={tab.jiraJqlQuery}
+          onChange={e => updateJiraSetting('jiraJqlQuery', e.target.value)}
           required
           fullWidth
           multiline
@@ -177,8 +119,10 @@ function Settings({
           className={classes.field}
           id="githubOrganisation"
           label="GitHub organization or username"
-          value={githubOrganisation}
-          onChange={event => setGithubOrganisation(event.target.value)}
+          defaultValue={tab.githubOrganisation}
+          onChange={e =>
+            updateGithubSetting('githubOrganisation', e.target.value)
+          }
           required
           fullWidth
           multiline
@@ -187,8 +131,10 @@ function Settings({
           className={classes.field}
           id="githubRepository"
           label="GitHub repository"
-          value={githubRepository}
-          onChange={event => setGithubRepository(event.target.value)}
+          defaultValue={tab.githubRepository}
+          onChange={e =>
+            updateGithubSetting('githubRepository', e.target.value)
+          }
           required
           fullWidth
           multiline
@@ -197,8 +143,8 @@ function Settings({
           className={classes.field}
           id="githubToken"
           label="GitHub token"
-          value={githubToken}
-          onChange={event => setGithubToken(event.target.value)}
+          defaultValue={tab.githubToken}
+          onChange={e => updateGithubSetting('githubToken', e.target.value)}
           required
           fullWidth
           multiline
@@ -207,9 +153,3 @@ function Settings({
     </form>
   )
 }
-
-export default connect(null, dispatch => ({
-  updateTabSettings: (tab: Tab) => dispatch(updateTabSettings(tab)),
-  updateTabJiraSettings: (tab: Tab) => dispatch(updateTabJiraSettings(tab)),
-  updateTabGithubSettings: (tab: Tab) => dispatch(updateTabGithubSettings(tab)),
-}))(Settings)
