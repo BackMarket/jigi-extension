@@ -34,6 +34,7 @@ const useStyles = makeStyles(() =>
       maxWidth: '300px',
       display: 'inline-block',
       marginLeft: theme.spacing(4),
+      fontSize: 'inherit',
     },
     issues: {},
     issue: {
@@ -45,12 +46,13 @@ const useStyles = makeStyles(() =>
     status: {
       border: '1px solid transparent',
       borderRadius: '3px',
-      padding: '0.1rem 0.3rem',
+      padding: '0 0.2rem',
       display: 'inline-block',
       textTransform: 'uppercase',
       fontWeight: '600',
-      fontSize: '11px',
-      margin: 'auto',
+      fontSize: '10px',
+      marginBottom: 'auto',
+      marginTop: '0',
     },
     statusGreen: {
       color: '#00875a',
@@ -131,10 +133,7 @@ const List = ({ tickets }) => {
                   <div className={classes.issues}>
                     {issues.map(({ pullRequest = { id: 'XXX' } }) => {
                       return (
-                        <Chip
-                          label={`#${pullRequest.id}`}
-                          key={pullRequest.id}
-                        />
+                        <Chip label={pullRequest.id} key={pullRequest.id} />
                       )
                     })}
                   </div>

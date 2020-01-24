@@ -16,7 +16,6 @@ import {
 import {
   createClient as createGithubClient,
   searchIssues,
-  getPullRequest,
 } from '../common/github'
 
 import TabPanel from './TabPanel'
@@ -32,6 +31,9 @@ const useStyles = makeStyles(() =>
     },
     tabs: {
       background: 'white',
+    },
+    tabPanel: {
+      fontSize: '14px',
     },
   }),
 )
@@ -108,17 +110,6 @@ const App = () => {
         currentTab.jiraJqlQuery,
       )
 
-      if (githubClient) {
-        console.log(
-          await getPullRequest(
-            githubClient,
-            currentTab.githubOrganisation,
-            currentTab.githubRepository,
-            '3695',
-          ),
-        )
-      }
-
       const ticketsToAdd = await Promise.all(
         fetchedTickets.map(async ticket => {
           let issues = []
@@ -192,7 +183,12 @@ const App = () => {
       </AppBar>
 
       {tabs.map((tab, index) => (
-        <TabPanel key={tab.id} index={index} value={activeTabIndex}>
+        <TabPanel
+          key={tab.id}
+          index={index}
+          value={activeTabIndex}
+          className={classes.tabPanel}
+        >
           {tab.showSettings ? (
             <Settings
               tab={tab}
