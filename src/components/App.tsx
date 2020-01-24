@@ -31,10 +31,6 @@ interface TabPanelProps {
 
 interface AppProps {
   tabs: any
-  createNewTab: any
-  addTab: any
-  setTabTickets: any
-  addTicket: any
 }
 
 const useStyles = makeStyles(() =>
@@ -65,16 +61,31 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-const App = ({
-  tabs,
-  createNewTab,
-  addTab,
-  setTabTickets,
-  addTicket,
-}: AppProps) => {
+const App = ({ tabs = {} }: AppProps) => {
   const classes = useStyles()
   const [activeTabIndex, setActiveTabIndex] = React.useState(0)
+  const dispatch = useDispatch()
+
   const tabsArray: Array<Tab> = Object.values(tabs)
+
+  useEffect(() => {
+    const loadTabs = async () => {
+      const tabs = await getTabs()
+
+      if (!tabs || Object.keys(tabs).length === 0) {
+        dispatch(createNewTab())
+
+        return
+      }
+
+      const tabValues: Array<Tab> = Object.values(tabs)
+      tabValues.forEach((tab: Tab) => dispatch(addTab(tab)))
+      dispatch(setTab(tabValues[0].id))
+    }
+
+    loadTabs()
+  }, [dispatch])
+
   const handleTabsChange = useCallback(
     async (event: any, newValue: number): Promise<void> => {
       if (tabsArray.length === 0) {
@@ -83,6 +94,11 @@ const App = ({
 
       const currentTab: any = tabsArray[newValue]
       setActiveTabIndex(newValue)
+
+      if (!currentTab.jiraClient) {
+        return
+      }
+
       const fetchedTickets: TicketsList = await listTickets(
         currentTab.jiraClient,
         currentTab.jiraJqlQuery,
@@ -94,38 +110,23 @@ const App = ({
             ticket.issues = await searchIssues(currentTab.githubClient, {
               query: `is:pr in:title [${ticket.id}]`,
             })
-            console.log(ticket.issues)
-            addTicket(ticket)
+
+            dispatch(addTicket(ticket))
+
             return ticket.id
           },
         ),
       )
 
-      setTabTickets({ tabId: currentTab.id, ticketIds })
+      dispatch(setTabTickets({ tabId: currentTab.id, ticketIds }))
     },
-    [addTicket, setTabTickets, tabsArray],
+    [dispatch, tabsArray],
   )
   const activeTab: any = Object.values(tabs)[activeTabIndex]
 
   useEffect(() => {
     handleTabsChange({}, 0)
   }, [handleTabsChange])
-
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    getTabs().then((tabs: any = {}) => {
-      console.log('LOADED tabs', tabs)
-      const tabValues: Array<Tab> = Object.values(tabs)
-
-      if (tabValues.length > 0) {
-        tabValues.forEach((tab: Tab) => dispatch(addTab(tab)))
-        dispatch(setTab(tabValues[0].id))
-      } else {
-        createNewTab()
-      }
-    })
-  }, [addTab, createNewTab, dispatch])
 
   return (
     <div className={classes.wrapper}>
@@ -137,7 +138,7 @@ const App = ({
           textColor="primary"
         >
           {tabsArray.map((tab: any, index: number) => (
-            <MuiTab key={tab.id} label={tab.title} />
+            <MuiTab key={tab.id} label={tab.title || 'New repository'} />
           ))}
           {/* <NewTabButton
             onCreate={() => {
@@ -158,17 +159,9 @@ const App = ({
     </div>
   )
 }
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    createNewTab: () => dispatch(createNewTab()),
-    addTab: (payload: any) => dispatch(addTab(payload)),
-    addTicket: (payload: any) => dispatch(addTicket(payload)),
-    setTabTickets: (payload: any) => dispatch(setTabTickets(payload)),
-  }
-}
 
 export default connect(({ tabs }: any) => {
   return {
     tabs,
   }
-}, mapDispatchToProps)(App)
+})(App)

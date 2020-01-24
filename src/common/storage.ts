@@ -2,7 +2,7 @@ import { Tab } from '../../types'
 
 export function get(key: string): Promise<any> {
   return new Promise(resolve => {
-    chrome.storage.local.get([key], result => resolve(result[key]))
+    chrome.storage.local.get([key], (result: any) => resolve(result[key]))
   })
 }
 

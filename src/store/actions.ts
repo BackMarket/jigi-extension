@@ -16,12 +16,11 @@ export const ISSUES_ADD = Symbol('Add a github issue')
 export const TAB_SET = Symbol('Set active tab')
 
 export const createNewTab = (): any => {
-  console.log('TAB_ADD (new)')
   return {
     type: TAB_ADD,
     payload: {
       id: uuidv4(),
-      title: 'My Sprint',
+      title: '',
       githubToken: '',
       githubOrganisation: '',
       githubRepository: '',
@@ -30,7 +29,7 @@ export const createNewTab = (): any => {
       jiraLogin: '',
       jiraJqlQuery:
         'assignee in (currentUser()) AND sprint in openSprints() AND sprint NOT in futureSprints() ORDER BY resolution DESC, status ASC, priority DESC, "Story point estimate" ASC',
-      showSettings: false,
+      showSettings: true,
     },
   }
 }
