@@ -2,15 +2,6 @@ import uuidv4 from 'uuid/v4'
 import { Tab, Ticket, IssuesList } from '../../types'
 import { SetTabTicketsPayload } from './reducers/tabs'
 
-import {
-  GITHUB_TOKEN,
-  GITHUB_ORGANISATION,
-  GITHUB_REPOSITORY,
-  JIRA_HOST,
-  JIRA_TOKEN,
-  JIRA_LOGIN,
-} from '../.dev'
-
 export const TAB_ADD = Symbol('Add an existing tab')
 export const TAB_SET_TICKETS = Symbol('Set JIRA tickets of one particular Tab')
 export const TAB_UPDATE_SETTINGS = Symbol('Update tab settings')
@@ -31,12 +22,12 @@ export const createNewTab = (): any => {
     payload: {
       id: uuidv4(),
       title: 'My Sprint',
-      githubToken: GITHUB_TOKEN,
-      githubOrganisation: GITHUB_ORGANISATION,
-      githubRepository: GITHUB_REPOSITORY,
-      jiraHost: JIRA_HOST,
-      jiraToken: JIRA_TOKEN,
-      jiraLogin: JIRA_LOGIN,
+      githubToken: '',
+      githubOrganisation: '',
+      githubRepository: '',
+      jiraHost: '',
+      jiraToken: '',
+      jiraLogin: '',
       jiraJqlQuery:
         'assignee in (currentUser()) AND sprint in openSprints() AND sprint NOT in futureSprints() ORDER BY resolution DESC, status ASC, priority DESC, "Story point estimate" ASC',
       showSettings: false,
