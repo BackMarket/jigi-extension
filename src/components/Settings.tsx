@@ -1,15 +1,11 @@
-import React from 'react'
-import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
-import { useDispatch, useSelector } from 'react-redux'
-import { useDebouncedCallback } from 'use-debounce'
 import { Tab } from '../../types'
+
+import React from 'react'
+import { useDebouncedCallback } from 'use-debounce'
+
+import { createStyles, makeStyles, Button, TextField } from '@material-ui/core'
+
 import { saveTab } from '../common/storage'
-import {
-  updateTabSettings,
-  updateTabJiraSettings,
-  updateTabGithubSettings,
-  deleteTab,
-} from '../store/actions'
 
 type SettingsProps = {
   tab: Tab
@@ -38,27 +34,20 @@ const useStyles = makeStyles(() =>
 
 export default function Settings({ tab }: SettingsProps) {
   const classes = useStyles()
-  const dispatch = useDispatch()
-  const isLastTab = useSelector(
-    (state: any) => Object.values(state.tabs.tabs).length <= 1,
-  )
 
   const [updateSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
     saveTab(newTab)
-    dispatch(updateTabSettings(newTab))
   }, 100)
 
   const [updateJiraSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
     saveTab(newTab)
-    dispatch(updateTabJiraSettings(newTab))
   }, 1000)
 
   const [updateGithubSetting] = useDebouncedCallback((field, value) => {
     const newTab = { ...tab, [field]: value }
     saveTab(newTab)
-    dispatch(updateTabGithubSettings(newTab))
   }, 1000)
 
   return (
@@ -76,7 +65,7 @@ export default function Settings({ tab }: SettingsProps) {
           label="Title"
           placeholder="Give a name to your tab..."
           defaultValue={tab.title}
-          onChange={e => updateSetting('title', e.target.value)}
+          onChange={(event: any) => updateSetting('title', event.target.value)}
           required
           fullWidth
         />
@@ -86,7 +75,9 @@ export default function Settings({ tab }: SettingsProps) {
           label="JIRA domain"
           placeholder="Ex: mycompany.atlassian.net"
           defaultValue={tab.jiraHost}
-          onChange={e => updateJiraSetting('jiraHost', e.target.value)}
+          onChange={(event: any) =>
+            updateJiraSetting('jiraHost', event.target.value)
+          }
           required
           fullWidth
         />
@@ -96,7 +87,9 @@ export default function Settings({ tab }: SettingsProps) {
           label="JIRA login"
           placeholder="E-mail address"
           defaultValue={tab.jiraLogin}
-          onChange={e => updateJiraSetting('jiraLogin', e.target.value)}
+          onChange={(event: any) =>
+            updateJiraSetting('jiraLogin', event.target.value)
+          }
           required
           fullWidth
         />
@@ -105,7 +98,9 @@ export default function Settings({ tab }: SettingsProps) {
           id="jiraToken"
           label="JIRA token"
           defaultValue={tab.jiraToken}
-          onChange={e => updateJiraSetting('jiraToken', e.target.value)}
+          onChange={(event: any) =>
+            updateJiraSetting('jiraToken', event.target.value)
+          }
           required
           fullWidth
         />
@@ -114,7 +109,9 @@ export default function Settings({ tab }: SettingsProps) {
           id="jiraJqlQuery"
           label="JIRA JQL Query"
           defaultValue={tab.jiraJqlQuery}
-          onChange={e => updateJiraSetting('jiraJqlQuery', e.target.value)}
+          onChange={(event: any) =>
+            updateJiraSetting('jiraJqlQuery', event.target.value)
+          }
           required
           fullWidth
           multiline
@@ -124,8 +121,8 @@ export default function Settings({ tab }: SettingsProps) {
           id="githubOrganisation"
           label="GitHub organization or username"
           defaultValue={tab.githubOrganisation}
-          onChange={e =>
-            updateGithubSetting('githubOrganisation', e.target.value)
+          onChange={(event: any) =>
+            updateGithubSetting('githubOrganisation', event.target.value)
           }
           required
           fullWidth
@@ -136,8 +133,8 @@ export default function Settings({ tab }: SettingsProps) {
           id="githubRepository"
           label="GitHub repository"
           defaultValue={tab.githubRepository}
-          onChange={e =>
-            updateGithubSetting('githubRepository', e.target.value)
+          onChange={(event: any) =>
+            updateGithubSetting('githubRepository', event.target.value)
           }
           required
           fullWidth
@@ -148,7 +145,9 @@ export default function Settings({ tab }: SettingsProps) {
           id="githubToken"
           label="GitHub token"
           defaultValue={tab.githubToken}
-          onChange={e => updateGithubSetting('githubToken', e.target.value)}
+          onChange={(event: any) =>
+            updateGithubSetting('githubToken', event.target.value)
+          }
           required
           fullWidth
           multiline
@@ -160,8 +159,7 @@ export default function Settings({ tab }: SettingsProps) {
           variant="contained"
           color="secondary"
           className={classes.action}
-          onClick={() => dispatch(deleteTab(tab))}
-          disabled={isLastTab}
+          onClick={() => console.log('Delete tab')}
         >
           Remove this page
         </Button>

@@ -1,17 +1,12 @@
 import React from 'react'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+
+import { makeStyles, createStyles, withStyles, Select } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel'
-import { makeStyles, createStyles, withStyles, Select } from '@material-ui/core'
-import theme from '../theme'
-import { connect } from 'react-redux'
-import { Ticket, IssuesList, TicketsList } from '../../types'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 
-interface ListProps {
-  tickets: TicketsList
-  issues: IssuesList
-}
+import theme from '../theme'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -63,36 +58,21 @@ const ExpansionPanel = withStyles({
   expanded: {},
 })(MuiExpansionPanel)
 
-const List = ({ tickets, issues }: ListProps) => {
+const List = ({ tickets }) => {
   const classes = useStyles()
-  const [expanded, setExpanded] = React.useState<string | false>(false)
+  const [expanded, setExpanded] = React.useState(false)
 
   const statusList = ['to-do', 'Running']
 
-  const handlePanelChange = (panel: string) => (
-    event: React.ChangeEvent<{}>,
-    isExpanded: boolean,
-  ) => {
+  const handlePanelChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
   const ticketsArray = Object.values(tickets)
 
   return (
     <>
-      {/* <Grid container spacing={1}>
-        <Grid className={classes.searchIcon} item xs={1}>
-          <SearchIcon />
-        </Grid>
-        <Grid item xs={11}>
-          <TextField
-            className={classes.search}
-            id="search-text-field"
-            label="Search"
-          />
-        </Grid>
-      </Grid> */}
       {ticketsArray.map(
-        ({ status, title, description, issues = [] }: Ticket, index) => (
+        ({ status, title, description, issues = [] }, index) => (
           <ExpansionPanel
             key={title}
             square
@@ -103,7 +83,7 @@ const List = ({ tickets, issues }: ListProps) => {
               <div className={classes.ticket}>
                 <div className={classes.information}>
                   <Select
-                    onClick={(event: any) => event.stopPropagation()}
+                    onClick={event => event.stopPropagation()}
                     native
                     value={status.name}
                   >
@@ -138,11 +118,4 @@ const List = ({ tickets, issues }: ListProps) => {
   )
 }
 
-const mapStateToProps = ({ tickets, issues }: any) => {
-  return {
-    tickets,
-    issues,
-  }
-}
-
-export default connect(mapStateToProps)(List)
+export default List

@@ -1,6 +1,5 @@
-import { TicketsList, Ticket } from '../../types'
-
 import { Issue, SearchResult } from 'jira-connector/types/api'
+import { TicketsList, Ticket } from '../../types'
 
 import JiraClient from 'jira-connector'
 
