@@ -1,11 +1,13 @@
 export function get(key) {
   return new Promise(resolve => {
+    // eslint-disable-next-line no-undef
     chrome.storage.local.get([key], result => resolve(result[key]))
   })
 }
 
 export function set(key, value) {
   return new Promise(resolve => {
+    // eslint-disable-next-line no-undef
     chrome.storage.local.set({ [key]: value }, resolve)
   })
 }
