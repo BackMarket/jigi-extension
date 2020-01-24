@@ -3,13 +3,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel'
-import {
-  makeStyles,
-  createStyles,
-  withStyles,
-  Select,
-  Typography,
-} from '@material-ui/core'
+import { makeStyles, createStyles, withStyles, Select } from '@material-ui/core'
 import theme from '../theme'
 import { connect } from 'react-redux'
 import { Ticket, IssuesList, TicketsList } from '../../types'
@@ -29,8 +23,25 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    ticketTitle: {
+    ticket: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    information: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
+    title: {
+      flex: 1,
+      display: 'inline-block',
       marginLeft: theme.spacing(4),
+    },
+    issues: {},
+    issue: {
+      display: 'inline-block',
+      marginRight: theme.spacing(4),
+      border: '1px solid black',
+      borderRadius: '4px',
     },
   }),
 )
@@ -56,7 +67,6 @@ const List = ({ tickets, issues }: ListProps) => {
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState<string | false>(false)
 
-  console.log(tickets)
   const statusList = ['to-do', 'Running']
 
   const handlePanelChange = (panel: string) => (
@@ -90,21 +100,33 @@ const List = ({ tickets, issues }: ListProps) => {
             onChange={handlePanelChange(`panel${index}`)}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Select
-                onClick={event => event.stopPropagation()}
-                native
-                value={status.name}
-              >
-                {statusList.map(statusListItem => (
-                  <option value={statusListItem}>{statusListItem}</option>
-                ))}
-              </Select>
-              <Typography className={classes.ticketTitle} variant="h6">
-                {title}
-              </Typography>
-              {issues.map(({ pullRequest = { id: 'XXX' } }) => (
-                <span>#{pullRequest.id}</span>
-              ))}
+              <div className={classes.ticket}>
+                <div className={classes.information}>
+                  <Select
+                    onClick={(event: any) => event.stopPropagation()}
+                    native
+                    value={status.name}
+                  >
+                    {statusList.map(statusListItem => (
+                      <option key={statusListItem} value={statusListItem}>
+                        {statusListItem}
+                      </option>
+                    ))}
+                  </Select>
+
+                  <span className={classes.title}>{title}</span>
+                </div>
+
+                {issues.length > 0 ? (
+                  <div className={classes.issues}>
+                    {issues.map(({ pullRequest = { id: 'XXX' } }) => (
+                      <div key={pullRequest.id} className={classes.issue}>
+                        #{pullRequest.id}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <div>{description}</div>

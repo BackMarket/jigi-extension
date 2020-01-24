@@ -5,7 +5,6 @@ import { createStore } from 'redux'
 import rootReducer from './store/reducers'
 import './index.css'
 import App from './components/App'
-import { createClient, search } from './common/jira'
 
 const store = createStore(
   rootReducer,
@@ -19,14 +18,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root'),
 )
-
-console.log('Test')
-const client = createClient(
-  'backmarket.atlassian.net',
-  'clement.prevot@backmarket.com',
-  'vSv7Ov4OahKPUanhjWsG8D08',
-)
-search(client, {
-  jql:
-    'assignee in (currentUser()) AND sprint in openSprints() AND sprint NOT in futureSprints() ORDER BY resolution DESC, status ASC, priority DESC, "Story point estimate" ASC',
-}).then(console.log)

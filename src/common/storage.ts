@@ -25,5 +25,4 @@ export async function saveTab(tab: Tab) {
       showSettings: false,
     },
   })
-  console.log('SAVED tags', await get('tabs'))
 }

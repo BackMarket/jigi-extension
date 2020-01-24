@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { connect, useDispatch, useSelector } from 'react-redux'
 import List from './List'
 import {
@@ -88,42 +88,50 @@ const App = ({ tabs = {} }: AppProps) => {
     }
 
     loadTabs()
-  }, [dispatch])
+  }, [tabs])
 
-  const handleTabsChange = useCallback(
-    async (event: any, newValue: number): Promise<void> => {
-      if (tabsArray.length === 0) {
-        return
-      }
+  const handleTabsChange = async (tabIndex: number): Promise<void> => {
+    console.log(tabsArray.length, tabIndex)
+    if (tabsArray.length === 0) {
+      return
+    }
 
-      const currentTab: any = tabsArray[newValue]
-      const fetchedTickets: TicketsList = await listTickets(
-        currentTab.jiraClient,
-        currentTab.jiraJqlQuery,
-      )
+    const currentTab: any = tabsArray[tabIndex]
 
-      const ticketIds: Array<string> = await Promise.all(
-        fetchedTickets.map(
-          async (ticket: Ticket): Promise<string> => {
+    console.log(currentTab)
+    if (!currentTab.jiraClient) {
+      return
+    }
+
+    const fetchedTickets: TicketsList = await listTickets(
+      currentTab.jiraClient,
+      currentTab.jiraJqlQuery,
+    )
+
+    const ticketIds: Array<string> = await Promise.all(
+      fetchedTickets.map(
+        async (ticket: Ticket): Promise<string> => {
+          try {
             ticket.issues = await searchIssues(currentTab.githubClient, {
               query: `is:pr in:title [${ticket.id}]`,
             })
+          } catch (err) {
+            console.error(err)
+          }
 
-            dispatch(addTicket(ticket))
+          dispatch(addTicket(ticket))
 
-            return ticket.id
-          },
-        ),
-      )
+          return ticket.id
+        },
+      ),
+    )
 
-      dispatch(setTabTickets({ tabId: currentTab.id, ticketIds }))
-    },
-    [dispatch, tabsArray],
-  )
+    dispatch(setTabTickets({ tabId: currentTab.id, ticketIds }))
+  }
 
   useEffect(() => {
-    handleTabsChange({}, 0)
-  }, [])
+    handleTabsChange(activeTabIndex)
+  }, [activeTabIndex])
 
   return (
     <div className={classes.wrapper}>
@@ -131,7 +139,9 @@ const App = ({ tabs = {} }: AppProps) => {
         <Tabs
           className={classes.tabs}
           value={activeTabIndex}
-          onChange={(event, value) => dispatch(setActiveTabIndex(value))}
+          onChange={(event: any, tabIndex: number) =>
+            dispatch(setActiveTabIndex(tabIndex))
+          }
           textColor="primary"
         >
           {tabsArray.map((tab: any, index: number) => (

@@ -44,7 +44,10 @@ export default (
       let githubClient
       try {
         githubClient = createGithubClient(payload.githubToken)
-      } catch {}
+      } catch (err) {
+        console.error(err)
+      }
+
       let jiraClient
       try {
         jiraClient = createJiraClient(
@@ -52,7 +55,9 @@ export default (
           payload.jiraLogin,
           payload.jiraToken,
         )
-      } catch {}
+      } catch (err) {
+        console.error(err)
+      }
       const tabs = {
         ...state.tabs,
         [payload.id]: {
@@ -98,7 +103,9 @@ export default (
           payload.jiraLogin,
           payload.jiraToken,
         )
-      } catch {}
+      } catch (err) {
+        console.error(err)
+      }
       return {
         tabs: {
           ...state.tabs,
@@ -119,7 +126,9 @@ export default (
       let githubClient
       try {
         githubClient = createGithubClient(payload.githubToken)
-      } catch {}
+      } catch (err) {
+        console.error(err)
+      }
       return {
         tabs: {
           ...state.tabs,
