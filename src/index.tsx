@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import { addTab, addIssues } from './store/actions'
+import { addTab } from './store/actions'
 import rootReducer from './store/reducers'
 import './index.css'
 import App from './components/App/App'
@@ -40,20 +40,6 @@ store.dispatch(
     jiraJqlQuery:
       'assignee in (currentUser()) AND sprint in openSprints() AND sprint NOT in futureSprints() ORDER BY resolution DESC, status ASC, priority DESC, "Story point estimate" ASC',
   }),
-)
-
-store.dispatch(
-  addIssues([
-    {
-      id: 1234,
-      title: 'Implement Jigi Extension',
-      state: 'open',
-      body: '123iugh',
-      pullRequest: {
-        url: '123124',
-      },
-    },
-  ]),
 )
 
 // -----------------------------------------------------------------------------

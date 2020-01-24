@@ -13,8 +13,9 @@ import SettingsButton from '../SettingsButton'
 import Settings from '../Settings'
 import { Tab } from '../../../types'
 import { list as listTickets } from '../../common/jira'
+import { searchIssues } from '../../common/github'
 import { setTabTickets, addTicket } from '../../store/actions'
-import { TicketsList } from '../../../types'
+import { Ticket, TicketsList } from '../../../types'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -72,10 +73,19 @@ const App = ({ tabs, setTabTickets, addTicket }: AppProps) => {
         currentTab.jiraJqlQuery,
       )
 
-      const ticketIds: Array<string> = fetchedTickets.map(ticket => {
-        addTicket(ticket)
-        return ticket.id
-      })
+      const ticketIds: Array<string> = await Promise.all(
+        fetchedTickets.map(
+          async (ticket: Ticket): Promise<string> => {
+            ticket.issues = await searchIssues(currentTab.githubClient, {
+              query: `is:pr in:title [${ticket.id}]`,
+            })
+            console.log(ticket.issues)
+            addTicket(ticket)
+            return ticket.id
+          },
+        ),
+      )
+
       setTabTickets({ tabId: currentTab.id, ticketIds })
     },
     [addTicket, setTabTickets, tabsArray],

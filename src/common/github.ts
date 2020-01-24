@@ -32,7 +32,7 @@ export async function searchIssues(
       labels,
       state,
       assignee,
-      pull_request,
+      pull_request = { html_url: '' },
       body,
     }): Issue => ({
       id,
@@ -46,7 +46,10 @@ export async function searchIssues(
       labels,
       state,
       assignee,
-      pullRequest: { url: pull_request.html_url },
+      pullRequest: {
+        id: pull_request.html_url!.split('/').pop() || '',
+        url: pull_request.html_url,
+      },
       body,
     }),
   )

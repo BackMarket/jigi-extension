@@ -84,32 +84,37 @@ const List = ({ tickets, issues }: ListProps) => {
           />
         </Grid>
       </Grid> */}
-      {ticketsArray.map(({ status, title, description }: Ticket, index) => (
-        <ExpansionPanel
-          key={title}
-          square
-          expanded={expanded === `panel${index}`}
-          onChange={handlePanelChange(`panel${index}`)}
-        >
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Select
-              onClick={event => event.stopPropagation()}
-              native
-              value={status.name}
-            >
-              {statusList.map(statusListItem => (
-                <option value={statusListItem}>{statusListItem}</option>
+      {ticketsArray.map(
+        ({ status, title, description, issues = [] }: Ticket, index) => (
+          <ExpansionPanel
+            key={title}
+            square
+            expanded={expanded === `panel${index}`}
+            onChange={handlePanelChange(`panel${index}`)}
+          >
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Select
+                onClick={event => event.stopPropagation()}
+                native
+                value={status.name}
+              >
+                {statusList.map(statusListItem => (
+                  <option value={statusListItem}>{statusListItem}</option>
+                ))}
+              </Select>
+              <Typography className={classes.ticketTitle} variant="h6">
+                {title}
+              </Typography>
+              {issues.map(({ pullRequest = { id: 'XXX' } }) => (
+                <span>#{pullRequest.id}</span>
               ))}
-            </Select>
-            <Typography className={classes.ticketTitle} variant="h6">
-              {title}
-            </Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <div>{description}</div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      ))}
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <div>{description}</div>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        ),
+      )}
     </>
   )
 }

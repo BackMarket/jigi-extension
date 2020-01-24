@@ -8,6 +8,7 @@ export type Ticket = {
   description?: string | null
   status: Status
   title: string
+  issues?: IssuesList
 }
 
 export type TicketsList = Array<Ticket>
@@ -46,6 +47,7 @@ export type Issue = {
   state: string
   assignee?: string | null
   pullRequest?: {
+    id: string
     url?: string | null
   }
   body: string
