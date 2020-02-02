@@ -1,0 +1,20 @@
+{
+  "title": [
+    {
+      "pattern": "^(chore|docs|feat|fix|perf|refactor|test|revert):\\s.*",
+      "message": "Your title need to follow our commit convention: ^(chore|docs|feat|fix|perf|refactor|test|revert):\\s.*"
+    }
+  ],
+  "body": [
+    {
+      "pattern": ".+",
+      "message": "You need to write some description"
+    }
+  ],
+  "assignees.0.login": [
+    {
+      "pattern": ".+",
+      "message": "You need to assign yourself"
+    }
+  ]
+}
