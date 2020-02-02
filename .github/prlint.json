@@ -1,8 +1,8 @@
 {
   "title": [
     {
-      "pattern": "^(chore|docs|feat|fix|perf|refactor|test|revert):\\s.*",
-      "message": "Your title need to follow our commit convention: ^(chore|docs|feat|fix|perf|refactor|test|revert):\\s.*"
+      "pattern": "^(chore|docs|feat|fix|perf|refactor|test|revert)\\(([\\w-_./]+|-|\\*)\\):\\s.*",
+      "message": "Your title need to follow our commit convention: ^(chore|docs|feat|fix|perf|refactor|test|revert)((\\w+|-|*)):\\s.*"
     }
   ],
   "body": [
