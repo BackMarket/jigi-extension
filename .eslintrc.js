@@ -22,10 +22,16 @@ module.exports = {
       {
         devDependencies: [
           '**/*.{spec,test}.{js,jsx,ts,tsx}',
-          './src/setupTests.ts',
+          'src/setupTests.ts',
         ],
       },
     ],
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
   },
+  overrides: [
+    {
+      files: 'src/**',
+      env: { browser: true },
+    },
+  ],
 }
