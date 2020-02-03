@@ -10,6 +10,7 @@ module.exports = {
     'prettier/@typescript-eslint',
     'prettier/react',
   ],
+  parser: '@typescript-eslint/parser',
   rules: {
     'import/extensions': [
       'error',
