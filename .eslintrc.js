@@ -18,7 +18,12 @@ module.exports = {
     ],
     'import/no-extraneous-dependencies': [
       'error',
-      { devDependencies: ['**/*.{spec,test}.{js,jsx,ts,tsx}'] },
+      {
+        devDependencies: [
+          '**/*.{spec,test}.{js,jsx,ts,tsx}',
+          './src/setupTests.ts',
+        ],
+      },
     ],
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
   },
