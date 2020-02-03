@@ -6,6 +6,7 @@ module.exports = {
   extends: [
     'airbnb',
     'plugin:import/typescript',
+    'plugin:jest/all',
     'prettier',
     'prettier/@typescript-eslint',
     'prettier/react',
@@ -26,6 +27,7 @@ module.exports = {
         ],
       },
     ],
+    'jest/prefer-expect-assertions': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
   },
   overrides: [
