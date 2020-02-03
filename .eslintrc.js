@@ -20,5 +20,6 @@ module.exports = {
       'error',
       { devDependencies: ['**/*.{spec,test}.{js,jsx,ts,tsx}'] },
     ],
+    'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
   },
 }
