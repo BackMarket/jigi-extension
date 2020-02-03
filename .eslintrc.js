@@ -9,4 +9,10 @@ module.exports = {
     'prettier/@typescript-eslint',
     'prettier/react',
   ],
+  rules: {
+    'import/no-extraneous-dependencies': [
+      'error',
+      { devDependencies: ['**/*.{spec,test}.{js,jsx,ts,tsx}'] },
+    ],
+  },
 }
