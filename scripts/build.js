@@ -57,8 +57,12 @@ console.info('Disabled code splitting')
 // Remove hashname from .js file names
 // Ex: build/static/js/main.57ddf3b4.js -> main.js
 config.output.filename = config.output.filename.replace(
-  /\.\[contenthash:\d+\]/,
-  '',
+  '[name].[contenthash:8].js',
+  '[name].js',
+)
+config.output.chunkFilename = config.output.chunkFilename.replace(
+  '[name].[contenthash:8].chunk.js',
+  '[name].js',
 )
 console.info('Disabled JS filenames hashes')
 
@@ -80,7 +84,10 @@ console.info('Disabled CSS filenames hashes')
 const lastModuleRule = config.module.rules[config.module.rules.length - 1]
 lastModuleRule.oneOf.forEach(rule => {
   if (rule.options && rule.options.name) {
-    rule.options.name = rule.options.name.replace(/\.\[hash:\d+\]/, '')
+    rule.options.name = rule.options.name.replace(
+      '[name].[hash:8].[ext]',
+      '[name].[ext]',
+    )
   }
 })
 console.info('Disabled media names hashs')
