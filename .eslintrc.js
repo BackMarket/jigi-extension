@@ -23,6 +23,7 @@ module.exports = {
       {
         devDependencies: [
           '**/*.{spec,test}.{js,jsx,ts,tsx}',
+          'scripts/**',
           'src/setupTests.ts',
         ],
       },
@@ -41,6 +42,12 @@ module.exports = {
         // Fixes spaced-comment - Expected exception block, space or tab after '//' in comment
         // Read more: https://github.com/typescript-eslint/typescript-eslint/issues/600#issuecomment-499979248
         'spaced-comment': ['error', 'always', { markers: ['/'] }],
+      },
+    },
+    {
+      files: 'scripts/**',
+      rules: {
+        'no-console': 'off',
       },
     },
   ],
