@@ -1,8 +1,28 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { storage } from './lib/chrome-extension-shim'
 import logo from './logo.svg'
 import './App.css'
 
+function useSyncStorage(callback: (changes: any) => void) {
+  useEffect(() => {
+    storage.onChanged.addListener(callback)
+    return () => storage.onChanged.removeListener(callback)
+  })
+}
+
+function useStoredCounter() {
+  const [counter, setCounter] = useState(0)
+  useSyncStorage((changes: any) => {
+    if (changes.counter) {
+      setCounter(changes.counter.newValue)
+    }
+  })
+  return counter
+}
+
 const App = () => {
+  const counter = useStoredCounter()
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +38,7 @@ const App = () => {
         >
           Learn React
         </a>
+        loads = {counter}
       </header>
     </div>
   )

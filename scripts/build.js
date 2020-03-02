@@ -5,13 +5,18 @@
 
 const rewire = require('rewire')
 
-// eslint-disable-next-line no-underscore-dangle
-const requirePrivateVar = (script, name) => rewire(script).__get__(name)
+const requirePrivateVars = (path, names) => {
+  const script = rewire(path)
+  return names.map(name => script.__get__(name)) // eslint-disable-line no-underscore-dangle
+}
 
 const requireWebpackPlugin = name =>
-  requirePrivateVar('react-scripts/config/webpack.config.js', name)
+  requirePrivateVars('react-scripts/config/webpack.config.js', [name])[0]
 
-const config = requirePrivateVar('react-scripts/scripts/build.js', 'config')
+const [config, paths] = requirePrivateVars('react-scripts/scripts/build.js', [
+  'config',
+  'paths',
+])
 
 const isPluginInstance = name => {
   const Plugin = requireWebpackPlugin(name)
@@ -24,25 +29,18 @@ function rewritePlugin(name, mapper) {
     throw new Error(`Could not find ${name} webpack plugin!`)
   }
 
-  const newPlugin = mapper(config.plugins[pluginIndex])
-  if (newPlugin) {
-    config.plugins[pluginIndex] = newPlugin
-  } else {
-    config.plugins.splice(pluginIndex, 1)
-  }
+  const newPlugins = mapper(config.plugins[pluginIndex]) || []
+  config.plugins.splice(
+    pluginIndex,
+    1,
+    ...(Array.isArray(newPlugins) ? newPlugins : [newPlugins]),
+  )
 }
 
 // Disable CSS & JS minification and sourcemaps
 config.optimization.minimize = false
 config.devtool = false
 console.info('Disabled CSS/JS minification')
-
-// Disable HTML minification
-rewritePlugin('HtmlWebpackPlugin', plugin => {
-  plugin.options.minify = false // eslint-disable-line no-param-reassign
-  return plugin
-})
-console.info('Disabled HTML minification')
 
 // Disable code splitting
 // Read more: https://github.com/facebook/create-react-app/issues/5306#issuecomment-433425838
@@ -57,8 +55,12 @@ console.info('Disabled code splitting')
 // Remove hashname from .js file names
 // Ex: build/static/js/main.57ddf3b4.js -> main.js
 config.output.filename = config.output.filename.replace(
-  /\.\[contenthash:\d+\]/,
-  '',
+  '[name].[contenthash:8].js',
+  '[name].js',
+)
+config.output.chunkFilename = config.output.chunkFilename.replace(
+  '[name].[contenthash:8].chunk.js',
+  '[name].js',
 )
 console.info('Disabled JS filenames hashes')
 
@@ -80,7 +82,10 @@ console.info('Disabled CSS filenames hashes')
 const lastModuleRule = config.module.rules[config.module.rules.length - 1]
 lastModuleRule.oneOf.forEach(rule => {
   if (rule.options && rule.options.name) {
-    rule.options.name = rule.options.name.replace(/\.\[hash:\d+\]/, '')
+    rule.options.name = rule.options.name.replace(
+      '[name].[hash:8].[ext]',
+      '[name].[ext]',
+    )
   }
 })
 console.info('Disabled media names hashs')
@@ -88,3 +93,24 @@ console.info('Disabled media names hashs')
 // Disable assets manifest (removes asset-manifest.json)
 rewritePlugin('ManifestPlugin', () => null)
 console.log('Disabled manifest plugin')
+
+// Switch to multiple entries, so we have:
+// 1. popup.html, with index.tsx
+// 2. background.ts
+config.entry = {
+  popup: config.entry[0],
+  background: config.entry[0].replace('index.tsx', 'background.ts'),
+}
+rewritePlugin('HtmlWebpackPlugin', plugin =>
+  Object.keys(config.entry).map(
+    entry =>
+      new plugin.constructor({
+        inject: true,
+        template: paths.appHtml,
+        minify: false,
+        chunks: [entry],
+        // ...(entry === 'popup' ? { filename: 'popup.html' } : {}),
+        filename: `${entry}.html`,
+      }),
+  ),
+)

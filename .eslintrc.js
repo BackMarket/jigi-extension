@@ -33,7 +33,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: 'src/**',
+      files: ['lib/**', 'src/**'],
       env: { browser: true },
     },
     {
